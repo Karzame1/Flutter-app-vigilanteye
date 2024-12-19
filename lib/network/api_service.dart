@@ -6,6 +6,7 @@ import 'package:fieldmanager_hrms_flutter/models/Settings/app_settings_model.dar
 import 'package:fieldmanager_hrms_flutter/models/chat_response.dart';
 import 'package:fieldmanager_hrms_flutter/models/dashboard_model.dart';
 import 'package:fieldmanager_hrms_flutter/models/status/status_response.dart';
+import 'package:fieldmanager_hrms_flutter/models/user_profile_model.dart';
 import 'package:fieldmanager_hrms_flutter/network/result.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -70,6 +71,17 @@ class ApiService {
     Iterable list = response?.data;
 
     return list.map((m) => ClientModel.fromJson(m)).toList();
+  }
+
+  //get user profile model
+  Future<UserProfileModel?> getUserProfile(String id) async {
+    var response = await handleResponse(await postRequest(APIRoutes.profileURL,
+        {'id' : id}));
+    debugPrint("users data --> ${response?.data}");
+    if(!checkSuccessCase(response)) return null;
+    var userProfileModel = UserProfileModel.fromJson(response?.data);
+    debugPrint("users data --> ${userProfileModel.team?.name}");
+    return userProfileModel;
   }
 
   Future<ClientModelSkipTake?> getClientsWithSkipTake(

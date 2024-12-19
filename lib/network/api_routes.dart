@@ -18,7 +18,7 @@ class APIRoutes {
   static const getAlerts = '${baseURL}getAlerts';
   static const setAlertRead = '${baseURL}setAlertRead';
 
-  static const profileURL = '${baseURL}UserProfiles/';
+  static const profileURL = '${baseURL}getUserProfile';
 
   static const loginURL = '${baseURL}login';
 

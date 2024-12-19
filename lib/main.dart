@@ -31,6 +31,7 @@ import 'service/SharedHelper.dart';
 import 'store/AppStore.dart';
 import 'utils/app_data_provider.dart';
 
+
 AppStore appStore = AppStore();
 ApiService apiRepo = ApiService();
 SharedHelper sharedHelper = SharedHelper();

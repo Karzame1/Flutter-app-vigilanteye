@@ -133,6 +133,7 @@ abstract class LoginStoreBase with Store {
     if (statusCode == 200) {
       var user = UserModel.fromJSON(apiResponse.data);
 
+      await setValue(userIdPref, user.id);
       await setValue(isLoggedInPref, true);
       await setValue(isDeviceVerifiedPref, false);
       await setValue(firstNamePref, user.firstName);

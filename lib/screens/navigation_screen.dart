@@ -3,6 +3,7 @@ import 'package:disable_battery_optimization/disable_battery_optimization.dart';
 import 'package:fieldmanager_hrms_flutter/dialog/sos_alert_dialog.dart';
 import 'package:fieldmanager_hrms_flutter/main.dart';
 import 'package:fieldmanager_hrms_flutter/models/sos_model.dart';
+import 'package:fieldmanager_hrms_flutter/models/user_profile_model.dart';
 import 'package:fieldmanager_hrms_flutter/screens/Attendance/AttendanceScreen.dart';
 import 'package:fieldmanager_hrms_flutter/screens/Banned/banned_screen.dart';
 import 'package:fieldmanager_hrms_flutter/screens/Chat/ChattingScreen.dart';
@@ -258,8 +259,16 @@ class _NavigationScreenState extends State<NavigationScreen> {
           });
     });
   }
-
+  UserProfileModel? _userProfileModel;
+  void getUserProfile() async {
+    var result = await apiRepo.getUserProfile(getStringAsync(userIdPref));
+    debugPrint("data ${result}");
+    _userProfileModel = result ;
+    setState(() {});
+  }
+  
   void init() async {
+    getUserProfile();
     if (isIOS) {
       setDarkStatusBar();
     } else {
@@ -369,6 +378,7 @@ To conduct well-being check requests*/
 
   @override
   Widget build(BuildContext context) {
+    debugPrint("user data ${_userProfileModel}");
     bool isNotificationEnabled = true;
     final tab = [
        AttendanceScreen(latLong: _latlong,),
@@ -522,30 +532,35 @@ Disable settings*/
                         ),
                         SizedBox(
                           width: 200,
-                          child: Column(
+                          child:
+                          _userProfileModel == null?
+                             const  Center(
+                                child: CircularProgressIndicator(),
+                              ):
+                          Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Flexible(
-                                child: Text(
-                                  // '${getStringAsync(appCountryPhoneCodePref)} ${getStringAsync(phoneNumberPref)}',
-                                  "Nigeria Police Force",
-                                  style:
-                                      primaryTextStyle(color: white, size: 18),
-                                ),
+                              Text(
+                                // '${getStringAsync(appCountryPhoneCodePref)} ${getStringAsync(phoneNumberPref)}',
+                               _userProfileModel?.team?.name??'',
+                                maxLines: 2,
+                                style:
+                                    primaryTextStyle(color: white, size: 18,),
                               ),
                               Text(
-                                'A Division',
+                                _userProfileModel?.team?.description??'',
+                                maxLines: 1,
                                 style: primaryTextStyle(color: white, size: 18),
                               ),
                               Text(
                                 sharedHelper.getFullName().toUpperCase(),
                                 style: primaryTextStyle(color: white, size: 16),
                               ),
-                              Text(
-                                'LGA UDU',
-                                style: primaryTextStyle(color: white, size: 15),
-                              ),
+                              // Text(
+                              //   'LGA UDU',
+                              //   style: primaryTextStyle(color: white, size: 15),
+                              // ),
                             ],
                           ),
                         )
