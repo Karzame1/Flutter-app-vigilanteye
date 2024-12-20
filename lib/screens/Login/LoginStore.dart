@@ -1,6 +1,5 @@
-import 'dart:convert';
 
-import 'package:fieldmanager_hrms_flutter/screens/navigation_screen.dart';
+import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart';
 import 'package:mobx/mobx.dart';
@@ -71,7 +70,7 @@ abstract class LoginStoreBase with Store {
       return;
     }
 
-    if (value != null && value.length < 6) {
+    if (value != null && value.length < 4) {
       error.employeeId = 'Invalid Employee Id';
       return;
     }

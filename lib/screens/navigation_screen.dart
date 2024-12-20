@@ -543,13 +543,13 @@ Disable settings*/
                             children: [
                               Text(
                                 // '${getStringAsync(appCountryPhoneCodePref)} ${getStringAsync(phoneNumberPref)}',
-                               _userProfileModel?.team?.name??'',
+                               _userProfileModel?.users?.team?.name??'',
                                 maxLines: 2,
                                 style:
                                     primaryTextStyle(color: white, size: 18,),
                               ),
                               Text(
-                                _userProfileModel?.team?.description??'',
+                                _userProfileModel?.users?.team?.description??'',
                                 maxLines: 1,
                                 style: primaryTextStyle(color: white, size: 18),
                               ),

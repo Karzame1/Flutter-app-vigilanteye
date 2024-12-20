@@ -80,7 +80,7 @@ class ApiService {
     debugPrint("users data --> ${response?.data}");
     if(!checkSuccessCase(response)) return null;
     var userProfileModel = UserProfileModel.fromJson(response?.data);
-    debugPrint("users data --> ${userProfileModel.team?.name}");
+    debugPrint("users data --> ${userProfileModel.users?.team?.name}");
     return userProfileModel;
   }
 
@@ -279,20 +279,22 @@ class ApiService {
       'deviceId': deviceId
     };
 
-    debugPrint("device para: ${query}");
+    debugPrint("device para: $query");
 
     var param = Uri(queryParameters: query).query;
 
-    var result = await handleResponse(
-        await getRequestWithQuery(APIRoutes.checkDevice, param).then((value){
-          debugPrint("value...$value...${value.statusCode}...${value.body} ");
-          return value;
-        }));
-    if (result == null) {
+    try {
+      var result = await handleResponse(await getRequestWithQuery(APIRoutes.checkDevice, param));
+      debugPrint("device_status..response$result");
+      if (result == null) {
+        return null;
+      }
+      debugPrint("device_status..response${result.data}");
+      return result.data.toString();
+    } on Exception catch (e) {
+      toast(e.toString());
       return null;
     }
-    debugPrint("device_status..response${result.data}");
-    return result.data.toString();
   }
 
   Future<bool> forgotPassword(String number) async {
@@ -317,7 +319,7 @@ class ApiService {
 
   Future<bool> checkValidEmployeeId(String employeeId) async {
     var response = await handleResponse(
-        await postRequest(APIRoutes.userNameCheckURL, employeeId));
+        await postRequest(APIRoutes.userNameCheckURL, {'user_name':employeeId}));
 
     return checkSuccessCase(response);
   }
