@@ -121,32 +121,22 @@ void showFlutterNotification(RemoteMessage message) {
 late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 
 void main() async {
-  debugPrint("............1............");
   WidgetsFlutterBinding.ensureInitialized();
-  debugPrint("............2............");
   await initialize(aLocaleLanguageList: languageList());
-  debugPrint("............3............");
   appStore.toggleDarkMode(value: getBoolAsync(isDarkModeOnPref));
-  debugPrint("............4............");
   await appStore.setLanguage(
       getStringAsync(SELECTED_LANGUAGE_CODE, defaultValue: defaultLanguage));
-  debugPrint("............5............");
   defaultRadius = 10;
   defaultToastGravityGlobal = ToastGravity.BOTTOM;
-  debugPrint("............6............");
   final GoogleMapsFlutterPlatform mapsImplementation =
       GoogleMapsFlutterPlatform.instance;
-  debugPrint("............7............");
   if (mapsImplementation is GoogleMapsFlutterAndroid) {
-    debugPrint("............8............");
     mapsImplementation.useAndroidViewSurface = true;
     mapsImplementation.initializeWithRenderer(AndroidMapRenderer.latest);
   }
-  debugPrint("............9............");
 
   //Configure firebase using firebase cli or comment this if block for testing
   if (!isWeb) {
-    debugPrint("............10............");
     await Firebase.initializeApp(
       options: const FirebaseOptions(
           apiKey: 'AIzaSyBLj5aUww5ms23bYjFfH_ASSRBZvh4-tRA',
@@ -158,9 +148,7 @@ void main() async {
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
     await setupFlutterNotifications();
   }
-  debugPrint("............11............");
   await initializeService();
-  debugPrint("............12............");
   await BackgroundLocationTrackerManager.initialize(
     backgroundCallback,
     config: BackgroundLocationTrackerConfig(
@@ -177,7 +165,6 @@ void main() async {
       ),
     ),
   );
-  debugPrint("............13............");
   runApp(const MyApp());
 }
 
@@ -186,7 +173,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint("............14............");
     return Observer(
       builder: (_) => MaterialApp(
         debugShowCheckedModeBanner: false,

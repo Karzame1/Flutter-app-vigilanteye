@@ -30,7 +30,7 @@ class AttendanceScreen extends StatefulWidget {
   State<AttendanceScreen> createState() => _AttendanceScreenState();
 }
 
-class _AttendanceScreenState extends State<AttendanceScreen> {
+class _AttendanceScreenState extends State<AttendanceScreen> with WidgetsBindingObserver {
   final AttendanceStore _store = AttendanceStore();
   LatLng _initialCameraPosition = const LatLng(20.5937, 78.9629);
   Timer? timer;
@@ -55,9 +55,34 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     init();
     _loadMapStyles();
-    startAlertsListener();
+    // startAlertsListener();
+  }
+ @override
+  void reinitialize() {
+    print("Reinitializing AttendanceScreen");
+    // _initialize();
+    init();
+    _loadMapStyles();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    _store.locationSubscription.cancel();
+    if (timer != null) timer!.cancel();
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      init();
+      _loadMapStyles();
+    }
   }
 
   void startAlertsListener() {
@@ -84,6 +109,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
   BitmapDescriptor? carIcon;
   double? _direction;
   void init() async {
+    debugPrint('init called');
     await getLocation();
     await BitmapDescriptor.fromAssetImage(
        const  ImageConfiguration(platform: TargetPlatform.android), "images/maps/car.png",mipmaps: false)
@@ -105,13 +131,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
         );
   }
 
-  @override
-  void dispose() {
-    _controller.dispose();
-    _store.locationSubscription.cancel();
-    if (timer != null) timer!.cancel();
-    super.dispose();
-  }
+
 
   final LatLng _center = const LatLng(45.521563, -122.677433);
 

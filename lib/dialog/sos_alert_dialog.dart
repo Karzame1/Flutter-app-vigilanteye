@@ -78,7 +78,8 @@ class _SosAlertDialogState extends State<SosAlertDialog> {
         button(
             'Locate Victim',
             onTap: () {
-          apiRepo.setAlertAsRead(widget.sosAlertModel.id!);
+              debugPrint("locating ${widget.sosAlertModel.latitude??''} ${widget.sosAlertModel.longitude??''}");
+          // apiRepo.setAlertAsRead(widget.sosAlertModel.id!);
           if(widget.onLocateVictim != null){
             widget.onLocateVictim!(
                 double.tryParse(widget.sosAlertModel.latitude??'',), double.tryParse(widget.sosAlertModel.longitude??""));

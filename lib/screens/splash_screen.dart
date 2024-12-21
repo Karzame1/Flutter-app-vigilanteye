@@ -1,5 +1,4 @@
 
-
 import 'package:fieldmanager_hrms_flutter/screens/Device/device_verification_screen.dart';
 import 'package:fieldmanager_hrms_flutter/utils/app_images.dart';
 import 'package:flutter/material.dart';
@@ -26,7 +25,6 @@ class _SplashScreenState extends State<SplashScreen> {
     init();
   }
 
-
   void init() async {
     await sharedHelper.refreshAppSettings();
     if (getBoolAsync(isLoggedInPref)) {
@@ -50,7 +48,6 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint("............15............");
     return Scaffold(
       backgroundColor: context.scaffoldBackgroundColor,
       body: Center(

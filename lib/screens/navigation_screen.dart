@@ -117,12 +117,15 @@ class _NavigationScreenState extends State<NavigationScreen> {
                 ),
                   onLocateVictim: (lat,long){
                       setState(() {
-                        _currentIndex = 0;
+
                         if (lat != null && long != null) {
                           _latlong = (lat, long);
+                          _currentIndex = 0;
+                          attendanceScreenKey.currentState?.initState();
                         }else{
                           _latlong = (0,0);
                         }
+
                       });
                   },
                 ),
@@ -206,6 +209,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
                   onLocateVictim: (lat,long){
                     setState(() {
                       _currentIndex = 0;
+                      attendanceScreenKey.currentState?.initState();
                       if (lat != null && long != null) {
                         _latlong = (lat, long);
                       }
@@ -376,17 +380,19 @@ To conduct well-being check requests*/
     return true;
   }
 
+  final GlobalKey<State<AttendanceScreen>> attendanceScreenKey = GlobalKey();
+
   @override
   Widget build(BuildContext context) {
     debugPrint("user data ${_userProfileModel}");
     bool isNotificationEnabled = true;
-    final tab = [
-       AttendanceScreen(latLong: _latlong,),
-      const ExpenseScreen(),
-      const DashboardScreen(),
-      const LeaveScreen(),
-      const TeamScreen(),
-    ];
+    // final tab = [
+    //    AttendanceScreen(latLong: _latlong,),
+    //   const ExpenseScreen(),
+    //   const DashboardScreen(),
+    //   const LeaveScreen(),
+    //   const TeamScreen(),
+    // ];
 
     var title = '';
 
@@ -509,7 +515,47 @@ To conduct well-being check requests*/
           type: BottomNavigationBarType.fixed,
         ),
       ),
-      body: tab[_currentIndex],
+      // body: tab[_currentIndex],
+      body:  IndexedStack(
+      index: _currentIndex,
+      children: [
+        Navigator(
+          onGenerateRoute: (settings) {
+            return MaterialPageRoute(
+              builder: (context) =>  AttendanceScreen(latLong: _latlong,),
+            );
+          },
+        ),
+        Navigator(
+          onGenerateRoute: (settings) {
+            return MaterialPageRoute(
+              builder: (context) => const ExpenseScreen(),
+            );
+          },
+        ),
+        Navigator(
+          onGenerateRoute: (settings) {
+            return MaterialPageRoute(
+              builder: (context) => const DashboardScreen(),
+            );
+          },
+        ),
+        Navigator(
+          onGenerateRoute: (settings) {
+            return MaterialPageRoute(
+              builder: (context) => const LeaveScreen(),
+            );
+          },
+        ),
+        Navigator(
+          onGenerateRoute: (settings) {
+            return MaterialPageRoute(
+              builder: (context) => const TeamScreen(),
+            );
+          },
+        ),
+      ],
+    ),
       drawer: Drawer(
         /*Asset inspection
 Response Alert
