@@ -25,6 +25,7 @@ abstract class AttendanceStoreBase with Store {
 
   List<LatLng> polylineCoordinates = [];
   Future<void> getPolyPoints(sourceLocation, destination) async {
+    polylineCoordinates.clear();
     PolylinePoints polylinePoints = PolylinePoints();
     try{
       PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(

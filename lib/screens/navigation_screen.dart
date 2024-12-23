@@ -121,7 +121,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
                         if (lat != null && long != null) {
                           _latlong = (lat, long);
                           _currentIndex = 0;
-                          attendanceScreenKey.currentState?.initState();
+                          attendanceScreenKey.currentState?.reinitialize();
                         }else{
                           _latlong = (0,0);
                         }
@@ -209,7 +209,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
                   onLocateVictim: (lat,long){
                     setState(() {
                       _currentIndex = 0;
-                      attendanceScreenKey.currentState?.initState();
+                      attendanceScreenKey.currentState?.reinitialize();
                       if (lat != null && long != null) {
                         _latlong = (lat, long);
                       }
@@ -380,7 +380,7 @@ To conduct well-being check requests*/
     return true;
   }
 
-  final GlobalKey<State<AttendanceScreen>> attendanceScreenKey = GlobalKey();
+  final GlobalKey<AttendanceScreenState> attendanceScreenKey = GlobalKey<AttendanceScreenState>();
 
   @override
   Widget build(BuildContext context) {
@@ -521,8 +521,15 @@ To conduct well-being check requests*/
       children: [
         Navigator(
           onGenerateRoute: (settings) {
+
             return MaterialPageRoute(
-              builder: (context) =>  AttendanceScreen(latLong: _latlong,),
+              builder: (context) =>  AttendanceScreen(latLong: _latlong,key: attendanceScreenKey,),
+              // settings: RouteSettings(
+              //   arguments: {
+              //     "lat" : _latlong.$1,
+              //     "long": _latlong.$2,
+              //   }
+              // )
             );
           },
         ),
@@ -595,18 +602,20 @@ Disable settings*/
                                     primaryTextStyle(color: white, size: 18,),
                               ),
                               Text(
-                                _userProfileModel?.users?.team?.description??'',
+                               'Division: ${_userProfileModel?.users?.division??'Not Found'}',
                                 maxLines: 1,
                                 style: primaryTextStyle(color: white, size: 18),
                               ),
                               Text(
                                 sharedHelper.getFullName().toUpperCase(),
+                                maxLines: 1,
                                 style: primaryTextStyle(color: white, size: 16),
                               ),
-                              // Text(
-                              //   'LGA UDU',
-                              //   style: primaryTextStyle(color: white, size: 15),
-                              // ),
+                              Text(
+                                'LGA: ${_userProfileModel?.users?.lga??'Not Found'}',
+                                maxLines: 1,
+                                style: primaryTextStyle(color: white, size: 15),
+                              ),
                             ],
                           ),
                         )

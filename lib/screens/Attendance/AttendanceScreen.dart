@@ -27,10 +27,10 @@ class AttendanceScreen extends StatefulWidget {
   final (double,double) latLong;
 
   @override
-  State<AttendanceScreen> createState() => _AttendanceScreenState();
+  AttendanceScreenState createState() => AttendanceScreenState();
 }
 
-class _AttendanceScreenState extends State<AttendanceScreen> with WidgetsBindingObserver {
+class AttendanceScreenState extends State<AttendanceScreen> {
   final AttendanceStore _store = AttendanceStore();
   LatLng _initialCameraPosition = const LatLng(20.5937, 78.9629);
   Timer? timer;
@@ -55,15 +55,13 @@ class _AttendanceScreenState extends State<AttendanceScreen> with WidgetsBinding
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addObserver(this);
     init();
     _loadMapStyles();
     // startAlertsListener();
   }
- @override
+
   void reinitialize() {
     print("Reinitializing AttendanceScreen");
-    // _initialize();
     init();
     _loadMapStyles();
   }
@@ -73,16 +71,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> with WidgetsBinding
     _controller.dispose();
     _store.locationSubscription.cancel();
     if (timer != null) timer!.cancel();
-    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
-      init();
-      _loadMapStyles();
-    }
   }
 
   void startAlertsListener() {
