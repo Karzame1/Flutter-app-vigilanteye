@@ -33,7 +33,7 @@ class _LeaveRequestScreenState extends State<LeaveRequestScreen> {
   DateTime _selectedFromDate = DateTime.now();
 
   DateTime _selectedToDate = DateTime.now().add(const Duration(days: 1));
-  final DateFormat formatter = DateFormat('dd/MM/yyyy');
+  final DateFormat formatter = DateFormat('MM/dd/yyyy');
   final _startDateCont = TextEditingController();
   final _endDateCont = TextEditingController();
   final _commentsCont = TextEditingController();
