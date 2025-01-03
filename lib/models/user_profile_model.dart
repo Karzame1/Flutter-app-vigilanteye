@@ -22,6 +22,7 @@ class Users {
     required this.userName,
     required this.email,
     required this.designation,
+    required this.coy,
     required this.phoneNumber,
     required this.emailVerifiedAt,
     required this.type,
@@ -56,6 +57,7 @@ class Users {
     required this.operationalStateId,
     required this.userTypeId,
     required this.cRoleId,
+    required this.roleType,
     required this.createdAt,
     required this.updatedAt,
     required this.roles,
@@ -68,6 +70,7 @@ class Users {
   final String? userName;
   final String? email;
   final String? designation;
+  final String? coy;
   final String? phoneNumber;
   final dynamic emailVerifiedAt;
   final dynamic type;
@@ -102,6 +105,7 @@ class Users {
   final dynamic operationalStateId;
   final dynamic userTypeId;
   final dynamic cRoleId;
+  final int? roleType;
   final DateTime? createdAt;
   final DateTime? updatedAt;
   final List<Role> roles;
@@ -115,6 +119,7 @@ class Users {
       userName: json["user_name"],
       email: json["email"],
       designation: json["designation"],
+      coy: json["coy"],
       phoneNumber: json["phone_number"],
       emailVerifiedAt: json["email_verified_at"],
       type: json["type"],
@@ -149,6 +154,7 @@ class Users {
       operationalStateId: json["operational_state_id"],
       userTypeId: json["user_type_id"],
       cRoleId: json["c_role_id"],
+      roleType: json["role_type"],
       createdAt: DateTime.tryParse(json["created_at"] ?? ""),
       updatedAt: DateTime.tryParse(json["updated_at"] ?? ""),
       roles: json["roles"] == null ? [] : List<Role>.from(json["roles"]!.map((x) => Role.fromJson(x))),
@@ -247,3 +253,4 @@ class Team {
   }
 
 }
+

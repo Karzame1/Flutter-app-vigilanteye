@@ -95,9 +95,23 @@ class _NavigationScreenState extends State<NavigationScreen> {
     super.dispose();
   }
 
+  /*{
+    "Date": "May 13, 2024 at 6:13:24 PM",
+    "alert_type": "Emergency",
+    "alert_message": "A user needs emergency service",
+    "Latitude": "31.5545131",
+    "Longitude": "74.3635971",
+    "city": "Lahore",
+    "isRead": true,
+    "state": "Punjab",
+    "user_Img": "https://firebasestorage.googleapis.com/v0/b/karzame-f00a9.appspot.com/o/UserPics%2Ffile%3A%2Fstorage%2Femulated%2F0%2FAndroid%2Fdata%2Fcom.karzamesos.app%2Ffiles%2FPictures%2Fe5856340-9b10-4b76-9d76-37c41dcea4aa_1714495511843.jpg?alt=media&token=cda67c9d-0d85-4046-862a-f315ad812c69",
+    "user_Name": "M.Hamza",
+    "user_Phone": "+923164558585"
+}*/
+
   void setupFirebase() {
     FirebaseMessaging.onMessage.listen((RemoteMessage event) {
-      log("message received");
+      log("message received fdgfggf${event.data}");
       log(event.notification!.body);
       showDialog(
           context: context,
@@ -107,17 +121,17 @@ class _NavigationScreenState extends State<NavigationScreen> {
                 backgroundColor: appStore.isDarkModeOn?black:white,
                 child: SosAlertDialog(
                     sosAlertModel: SosAlertModel(
-                  userName: event.data["UserName"],
+                  userName: event.data["user_Name"],
                   userPhone: event.data["user_Phone"],
-                  message: event.notification!.body,
+                  message: event.data["alert_message"],
+                  // message: event.notification!.body,
                   userImage: event.data["user_Img"],
-                  type: "Emergency",
+                  type: event.data["alert_type"],
                   latitude: event.data["Latitude"],
                   longitude: event.data["Longitude"]
                 ),
                   onLocateVictim: (lat,long){
                       setState(() {
-
                         if (lat != null && long != null) {
                           _latlong = (lat, long);
                           _currentIndex = 0;
@@ -198,11 +212,12 @@ class _NavigationScreenState extends State<NavigationScreen> {
               Dialog(
                 backgroundColor: appStore.isDarkModeOn?black:white,
                 child: SosAlertDialog(sosAlertModel: SosAlertModel(
-                    userName: event.data["UserName"],
+                    userName: event.data["user_Name"],
                     userPhone: event.data["user_Phone"],
-                    message: event.notification!.body,
+                    message: event.data["alert_message"],
+                    // message: event.notification!.body,
                     userImage: event.data["user_Img"],
-                    type: "Emergency",
+                    type: event.data["alert_type"],
                     latitude: event.data["Latitude"],
                     longitude: event.data["Longitude"]
                 ),
@@ -263,6 +278,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
           });
     });
   }
+
   UserProfileModel? _userProfileModel;
   void getUserProfile() async {
     var result = await apiRepo.getUserProfile(getStringAsync(userIdPref));
@@ -596,7 +612,9 @@ Disable settings*/
                             children: [
                               Text(
                                 // '${getStringAsync(appCountryPhoneCodePref)} ${getStringAsync(phoneNumberPref)}',
-                               _userProfileModel?.users?.team?.name??'',
+                                _userProfileModel?.users?.roleType == 0?
+                               _userProfileModel?.users?.team?.name??'':
+                               _userProfileModel?.users?.coy??'',
                                 maxLines: 2,
                                 style:
                                     primaryTextStyle(color: white, size: 18,),
