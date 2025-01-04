@@ -47,7 +47,8 @@ class _DeviceVerificationScreenState extends State<DeviceVerificationScreen> {
                     DeviceVerificationStatus.verifying) {
                   return Lottie.asset(
                       'assets/animations/phone_number_verification.json');
-                } else if (_store.deviceVerificationStatus ==
+                }
+                else if (_store.deviceVerificationStatus ==
                     DeviceVerificationStatus.pending) {
                   return Column(
                     children: [
@@ -68,13 +69,15 @@ class _DeviceVerificationScreenState extends State<DeviceVerificationScreen> {
                       ),
                     ],
                   );
-                } else if (_store.deviceVerificationStatus ==
+                }
+                else if (_store.deviceVerificationStatus ==
                     DeviceVerificationStatus.alreadyRegistered) {
                   return Lottie.asset('assets/animations/success.json',
                       repeat: false);
                   /*return Lottie.asset('assets/animations/failed.json',
                       repeat: false);*/
-                } else if (_store.deviceVerificationStatus ==
+                }
+                else if (_store.deviceVerificationStatus ==
                     DeviceVerificationStatus.notRegistered) {
                   return Column(
                     children: [
@@ -95,15 +98,16 @@ class _DeviceVerificationScreenState extends State<DeviceVerificationScreen> {
                       ),
                     ],
                   );
-                } else if (_store.deviceVerificationStatus ==
+                }
+                else if (_store.deviceVerificationStatus ==
                     DeviceVerificationStatus.verified) {
                   return Lottie.asset('assets/animations/success.json',
                       repeat: false);
-                } else {
+                }
+                else {
                   return Lottie.asset('assets/animations/failed.json',
                       repeat: false);
                 }
-                return Container();
               },
             ),
             10.height,
@@ -126,7 +130,8 @@ class _DeviceVerificationScreenState extends State<DeviceVerificationScreen> {
                         ),
                       ],
                     );
-                  } else if (_store.deviceVerificationStatus ==
+                  }
+                  else if (_store.deviceVerificationStatus ==
                       DeviceVerificationStatus.pending) {
                     return Column(
                       children: [
@@ -143,7 +148,8 @@ class _DeviceVerificationScreenState extends State<DeviceVerificationScreen> {
                         ),
                       ],
                     );
-                  } else if (_store.deviceVerificationStatus ==
+                  }
+                  else if (_store.deviceVerificationStatus ==
                       DeviceVerificationStatus.alreadyRegistered) {
                     return Column(
                       children: [
@@ -173,7 +179,8 @@ class _DeviceVerificationScreenState extends State<DeviceVerificationScreen> {
                         ),
                       ],
                     );*/
-                  } else if (_store.deviceVerificationStatus ==
+                  }
+                  else if (_store.deviceVerificationStatus ==
                       DeviceVerificationStatus.notRegistered) {
                     return Column(
                       children: [
@@ -189,7 +196,8 @@ class _DeviceVerificationScreenState extends State<DeviceVerificationScreen> {
                         ),
                       ],
                     );
-                  } else if (_store.deviceVerificationStatus ==
+                  }
+                  else if (_store.deviceVerificationStatus ==
                       DeviceVerificationStatus.verified) {
                     return Column(
                       children: [
@@ -205,7 +213,8 @@ class _DeviceVerificationScreenState extends State<DeviceVerificationScreen> {
                         ),
                       ],
                     );
-                  } else {
+                  }
+                  else {
                     return Column(
                       children: [
                         Text(
@@ -237,7 +246,8 @@ class _DeviceVerificationScreenState extends State<DeviceVerificationScreen> {
                     const NavigationScreen().launch(context, isNewTask: true);
                   }
                 });
-              } else if (_store.deviceVerificationStatus ==
+              }
+              else if (_store.deviceVerificationStatus ==
                   DeviceVerificationStatus.notRegistered) {
                 return button(language!.lblRegisterNow, onTap: () async {
                   await _store.registerDevice();
@@ -247,7 +257,8 @@ class _DeviceVerificationScreenState extends State<DeviceVerificationScreen> {
                     const NavigationScreen().launch(context, isNewTask: true);
                   }
                 });
-              } else if (_store.deviceVerificationStatus ==
+              }
+              else if (_store.deviceVerificationStatus ==
                       DeviceVerificationStatus.alreadyRegistered ||
                   _store.deviceVerificationStatus ==
                       DeviceVerificationStatus.failed) {
@@ -264,12 +275,11 @@ class _DeviceVerificationScreenState extends State<DeviceVerificationScreen> {
                     const NavigationScreen().launch(context, isNewTask: true);
                   }
                 });
-                /*return button(language!.lblLogOut, onTap: () {
-                  sharedHelper.logout();
-                  const LoginScreen().launch(context, isNewTask: true);
-                });*/
+                // return button(language!.lblLogOut, onTap: () {
+                //   sharedHelper.logout();
+                //   const LoginScreen().launch(context, isNewTask: true);
+                // });
               }
-
               return Container();
             }),
           ],
