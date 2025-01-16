@@ -29,6 +29,7 @@ const locationUpdateIntervalTypePref = 'locationUpdateIntervalTypePref';
 const locationUpdateIntervalPref = 'locationUpdateIntervalPref';
 const appVersionPref = 'appVersionPref';
 const appCurrencySymbolPref = 'currencySymbolPref';
+const appCurrencyCodePref = 'currencyCode';
 const appDistanceUnitPref = 'distanceUnitPref';
 const appCountryPhoneCodePref = 'CountryPhoneCodePref';
 

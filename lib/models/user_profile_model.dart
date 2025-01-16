@@ -1,21 +1,21 @@
 
 class UserProfileModel {
   UserProfileModel({
-    required this.users,
+    required this.user,
   });
 
-  final Users? users;
+  final User? user;
 
   factory UserProfileModel.fromJson(Map<String, dynamic> json){
     return UserProfileModel(
-      users: json["users"] == null ? null : Users.fromJson(json["users"]),
+      user: json["user"] == null ? null : User.fromJson(json["user"]),
     );
   }
 
 }
 
-class Users {
-  Users({
+class User {
+  User({
     required this.id,
     required this.firstName,
     required this.lastName,
@@ -70,7 +70,7 @@ class Users {
   final String? userName;
   final String? email;
   final String? designation;
-  final String? coy;
+  final Coy? coy;
   final String? phoneNumber;
   final dynamic emailVerifiedAt;
   final dynamic type;
@@ -109,17 +109,17 @@ class Users {
   final DateTime? createdAt;
   final DateTime? updatedAt;
   final List<Role> roles;
-  final Team? team;
+  final Coy? team;
 
-  factory Users.fromJson(Map<String, dynamic> json){
-    return Users(
+  factory User.fromJson(Map<String, dynamic> json){
+    return User(
       id: json["id"],
       firstName: json["first_name"],
       lastName: json["last_name"],
       userName: json["user_name"],
       email: json["email"],
       designation: json["designation"],
-      coy: json["coy"],
+      coy: json["coy"] == null ? null : Coy.fromJson(json["coy"]),
       phoneNumber: json["phone_number"],
       emailVerifiedAt: json["email_verified_at"],
       type: json["type"],
@@ -158,7 +158,7 @@ class Users {
       createdAt: DateTime.tryParse(json["created_at"] ?? ""),
       updatedAt: DateTime.tryParse(json["updated_at"] ?? ""),
       roles: json["roles"] == null ? [] : List<Role>.from(json["roles"]!.map((x) => Role.fromJson(x))),
-      team: json["team"] == null ? null : Team.fromJson(json["team"]),
+      team: json["team"] == null ? null : Coy.fromJson(json["team"]),
     );
   }
 
@@ -210,6 +210,51 @@ class Pivot {
     return Pivot(
       userId: json["user_id"],
       roleId: json["role_id"],
+    );
+  }
+
+}
+
+class Coy {
+  Coy({
+    required this.id,
+    required this.name,
+    required this.description,
+    required this.image,
+    required this.status,
+    required this.isChatEnabled,
+    required this.createdById,
+    required this.updatedById,
+    required this.createdAt,
+    required this.updatedAt,
+    required this.imageUrl,
+  });
+
+  final int? id;
+  final String? name;
+  final String? description;
+  final String? image;
+  final String? status;
+  final int? isChatEnabled;
+  final dynamic createdById;
+  final dynamic updatedById;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
+  final String? imageUrl;
+
+  factory Coy.fromJson(Map<String, dynamic> json){
+    return Coy(
+      id: json["id"],
+      name: json["name"],
+      description: json["description"],
+      image: json["image"],
+      status: json["status"],
+      isChatEnabled: json["is_chat_enabled"],
+      createdById: json["created_by_id"],
+      updatedById: json["updated_by_id"],
+      createdAt: DateTime.tryParse(json["created_at"] ?? ""),
+      updatedAt: DateTime.tryParse(json["updated_at"] ?? ""),
+      imageUrl: json["image_url"],
     );
   }
 

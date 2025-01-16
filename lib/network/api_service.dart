@@ -80,7 +80,7 @@ class ApiService {
     debugPrint("users data --> ${response?.data}");
     if(!checkSuccessCase(response)) return null;
     var userProfileModel = UserProfileModel.fromJson(response?.data);
-    debugPrint("users data --> ${userProfileModel.users?.team?.name}");
+    debugPrint("users data --> ${userProfileModel.user?.team?.name}");
     return userProfileModel;
   }
 

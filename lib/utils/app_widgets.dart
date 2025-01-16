@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -257,7 +258,7 @@ Widget itemRowTWidget(String title, value, Color textColor) {
       10.width,
       Text(
         value,
-        style: primaryTextStyle(color: textColor),
+        style: GoogleFonts.archivo(),
       ),
     ],
   );

@@ -36,6 +36,7 @@ class SharedHelper {
     setValue(
         locationUpdateIntervalTypePref, settings.locationUpdateIntervalType);
     setValue(locationUpdateIntervalPref, settings.locationUpdateInterval);
+    setValue(appCurrencyCodePref, settings.currency);
     setValue(appCurrencySymbolPref, settings.currencySymbol);
     setValue(appDistanceUnitPref, settings.distanceUnit);
     setValue(appCountryPhoneCodePref, settings.countryPhoneCode);

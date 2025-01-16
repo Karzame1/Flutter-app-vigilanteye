@@ -282,7 +282,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
   UserProfileModel? _userProfileModel;
   void getUserProfile() async {
     var result = await apiRepo.getUserProfile(getStringAsync(userIdPref));
-    debugPrint("data ${result}");
+    debugPrint("data $result");
     _userProfileModel = result ;
     setState(() {});
   }
@@ -400,7 +400,7 @@ To conduct well-being check requests*/
 
   @override
   Widget build(BuildContext context) {
-    debugPrint("user data ${_userProfileModel}");
+    debugPrint("user data $_userProfileModel");
     bool isNotificationEnabled = true;
     // final tab = [
     //    AttendanceScreen(latLong: _latlong,),
@@ -537,7 +537,6 @@ To conduct well-being check requests*/
       children: [
         Navigator(
           onGenerateRoute: (settings) {
-
             return MaterialPageRoute(
               builder: (context) =>  AttendanceScreen(latLong: _latlong,key: attendanceScreenKey,),
               // settings: RouteSettings(
@@ -600,27 +599,42 @@ Disable settings*/
                           width: 8,
                         ),
                         SizedBox(
-                          width: 200,
+                          width: 260,
                           child:
                           _userProfileModel == null?
                              const  Center(
-                                child: CircularProgressIndicator(),
+                                child: Text("Loading Details...", style: TextStyle(color: Colors.white, fontSize: 16),),
                               ):
                           Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                // '${getStringAsync(appCountryPhoneCodePref)} ${getStringAsync(phoneNumberPref)}',
-                                _userProfileModel?.users?.roleType == 0?
-                               _userProfileModel?.users?.team?.name??'':
-                               _userProfileModel?.users?.coy??'',
-                                maxLines: 2,
-                                style:
-                                    primaryTextStyle(color: white, size: 18,),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Flexible(
+                                    flex: 4,
+                                    child: Text(
+                                      // '${getStringAsync(appCountryPhoneCodePref)} ${getStringAsync(phoneNumberPref)}',
+                                      _userProfileModel?.user?.roleType == 0?
+                                     _userProfileModel?.user?.team?.name??'':
+                                     _userProfileModel?.user?.coy?.name??'',
+                                      maxLines: 2,
+                                      style:
+                                          primaryTextStyle(color: white, size: 18,),
+                                    ),
+                                  ),
+                                  Flexible(
+                                    flex: 1,
+                                      child: Image.network(_userProfileModel?.user?.roleType == 0?
+                                        _userProfileModel?.user?.team?.imageUrl??'':
+                                        _userProfileModel?.user?.coy?.imageUrl??'',),
+                                  )
+                                ],
                               ),
                               Text(
-                               'Division: ${_userProfileModel?.users?.division??'Not Found'}',
+                               'Division: ${_userProfileModel?.user?.division??'Not Found'}',
                                 maxLines: 1,
                                 style: primaryTextStyle(color: white, size: 18),
                               ),
@@ -630,7 +644,7 @@ Disable settings*/
                                 style: primaryTextStyle(color: white, size: 16),
                               ),
                               Text(
-                                'LGA: ${_userProfileModel?.users?.lga??'Not Found'}',
+                                'LGA: ${_userProfileModel?.user?.lga??'Not Found'}',
                                 maxLines: 1,
                                 style: primaryTextStyle(color: white, size: 15),
                               ),

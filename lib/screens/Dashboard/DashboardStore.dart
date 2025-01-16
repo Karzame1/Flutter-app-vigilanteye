@@ -13,7 +13,7 @@ abstract class DashboardStoreBase with Store {
   @observable
   bool isLoading = false;
 
-  void getData() async {
+  Future<void> getData() async {
     isLoading = true;
     var result = await apiRepo.getDashboardInfo();
 
