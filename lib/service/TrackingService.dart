@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:background_location_tracker/background_location_tracker.dart';
 import 'package:battery_plus/battery_plus.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_activity_recognition/flutter_activity_recognition.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:geolocator/geolocator.dart';
@@ -15,6 +16,7 @@ class TrackingService {
   int count = 0;
 
   updateDeviceStatus(double latitude, double longitude) async {
+    debugPrint("updated $latitude $longitude");
     // Instantiate it
     var battery = Battery();
     var connectivityResult = await (Connectivity().checkConnectivity());

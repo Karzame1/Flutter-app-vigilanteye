@@ -61,7 +61,6 @@ class AttendanceScreenState extends State<AttendanceScreen> {
   }
 
   void reinitialize() {
-    print("Reinitializing AttendanceScreen");
     init();
     _loadMapStyles();
   }
@@ -119,8 +118,6 @@ class AttendanceScreenState extends State<AttendanceScreen> {
               : _SupportState.unsupported),
         );
   }
-
-
 
   final LatLng _center = const LatLng(45.521563, -122.677433);
 
@@ -250,7 +247,7 @@ class AttendanceScreenState extends State<AttendanceScreen> {
     _setMapStyle();
     _store.locationSubscription =
         _store.locationService.onLocationChanged.listen((l) {
-          debugPrint("latitude-> ${l.latitude}, longitude-> ${l.longitude}");
+
           _currentPosition = l;
       _controller.animateCamera(
         CameraUpdate.newCameraPosition(
@@ -308,7 +305,6 @@ class AttendanceScreenState extends State<AttendanceScreen> {
     );
 
   }
-
 
   Future<void> getPolyLinePoints() async {
     if(widget.latLong.$1 != 0 && widget.latLong.$2 != 0){
@@ -771,6 +767,3 @@ enum _SupportState {
   supported,
   unsupported,
 }
-
-
-

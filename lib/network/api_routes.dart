@@ -84,5 +84,4 @@ class APIRoutes {
 
   //SignBoard
   static const addSignBoardRequest = '${baseURL}signBoard/createRequest';
-
 }
