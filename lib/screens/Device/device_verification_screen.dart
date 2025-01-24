@@ -273,6 +273,9 @@ class _DeviceVerificationScreenState extends State<DeviceVerificationScreen> {
                     toast(language!.lblWelcomeBack);
                     if (!mounted) return;
                     const NavigationScreen().launch(context, isNewTask: true);
+                  }else{
+                    const LoginScreen().launch(context, isNewTask: false);
+                    await setValue(isLoggedInPref, false);
                   }
                 });
                 // return button(language!.lblLogOut, onTap: () {

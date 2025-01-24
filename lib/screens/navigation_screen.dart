@@ -121,6 +121,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
                 backgroundColor: appStore.isDarkModeOn?black:white,
                 child: SosAlertDialog(
                     sosAlertModel: SosAlertModel(
+                      id: event.data["id"],
                   userName: event.data["user_Name"],
                   userPhone: event.data["user_Phone"],
                   message: event.data["alert_message"],
@@ -130,17 +131,26 @@ class _NavigationScreenState extends State<NavigationScreen> {
                   latitude: event.data["Latitude"],
                   longitude: event.data["Longitude"]
                 ),
-                  onLocateVictim: (lat,long){
-                      setState(() {
-                        if (lat != null && long != null) {
-                          _latlong = (lat, long);
-                          _currentIndex = 0;
-                          attendanceScreenKey.currentState?.reinitialize();
-                        }else{
-                          _latlong = (0,0);
+                  onLocateVictim: (lat,long) async{
+                      try {
+                        final updated = await apiRepo.updateAlertStatus(event.data["id"]??'');
+                        if(!updated){
+                          toast("Not updated!, please try again!,");
+                          return;
                         }
-
-                      });
+                        setState(() {
+                          if (lat != null && long != null) {
+                            _latlong = (lat, long);
+                            _currentIndex = 0;
+                            attendanceScreenKey.currentState?.reinitialize();
+                          }else{
+                            _latlong = (0,0);
+                          }
+                        });
+                      } on Exception catch (e) {
+                        debugPrint("error $e");
+                        toast(e.toString());
+                      }
                   },
                 ),
               )
@@ -212,6 +222,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
               Dialog(
                 backgroundColor: appStore.isDarkModeOn?black:white,
                 child: SosAlertDialog(sosAlertModel: SosAlertModel(
+                    id : event.data["id"],
                     userName: event.data["user_Name"],
                     userPhone: event.data["user_Phone"],
                     message: event.data["alert_message"],
@@ -221,17 +232,26 @@ class _NavigationScreenState extends State<NavigationScreen> {
                     latitude: event.data["Latitude"],
                     longitude: event.data["Longitude"]
                 ),
-                  onLocateVictim: (lat,long){
-                    setState(() {
-                      _currentIndex = 0;
-                      attendanceScreenKey.currentState?.reinitialize();
-                      if (lat != null && long != null) {
-                        _latlong = (lat, long);
+                  onLocateVictim: (lat,long) async{
+                    try {
+                      final updated = await apiRepo.updateAlertStatus(event.data["id"]??'');
+                      if(!updated){
+                        toast("Not updated!, please try again!,");
+                        return;
                       }
-                      else{
-                        _latlong = (0,0);
-                      }
-                    });
+                      setState(() {
+                        if (lat != null && long != null) {
+                          _latlong = (lat, long);
+                          _currentIndex = 0;
+                          attendanceScreenKey.currentState?.reinitialize();
+                        }else{
+                          _latlong = (0,0);
+                        }
+                      });
+                    } on Exception catch (e) {
+                      debugPrint("error $e");
+                      toast(e.toString());
+                    }
                   },
                 ),
               )
@@ -279,7 +299,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
     });
   }
 
-  UserProfileModel? _userProfileModel;
+  User? _userProfileModel;
   void getUserProfile() async {
     var result = await apiRepo.getUserProfile(getStringAsync(userIdPref));
     debugPrint("data $result");
@@ -617,24 +637,26 @@ Disable settings*/
                                     flex: 4,
                                     child: Text(
                                       // '${getStringAsync(appCountryPhoneCodePref)} ${getStringAsync(phoneNumberPref)}',
-                                      _userProfileModel?.user?.roleType == 0?
-                                     _userProfileModel?.user?.team?.name??'':
-                                     _userProfileModel?.user?.coy?.name??'',
+                                      _userProfileModel?.roleType == 0?
+                                     _userProfileModel?.team?.name??'Not Found':
+                                     _userProfileModel?.coy?.name??'Not Found',
                                       maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
                                       style:
                                           primaryTextStyle(color: white, size: 18,),
                                     ),
                                   ),
+                                  if(_userProfileModel?.coy?.imageUrl != null || _userProfileModel?.team?.imageUrl != null)
                                   Flexible(
                                     flex: 1,
-                                      child: Image.network(_userProfileModel?.user?.roleType == 0?
-                                        _userProfileModel?.user?.team?.imageUrl??'':
-                                        _userProfileModel?.user?.coy?.imageUrl??'',),
+                                      child: Image.network(_userProfileModel?.roleType == 0?
+                                        _userProfileModel?.team?.imageUrl??'':
+                                        _userProfileModel?.coy?.imageUrl??'',),
                                   )
                                 ],
                               ),
                               Text(
-                               'Division: ${_userProfileModel?.user?.division??'Not Found'}',
+                               'Division: ${_userProfileModel?.division??'Not Found'}',
                                 maxLines: 1,
                                 style: primaryTextStyle(color: white, size: 18),
                               ),
@@ -644,7 +666,7 @@ Disable settings*/
                                 style: primaryTextStyle(color: white, size: 16),
                               ),
                               Text(
-                                'LGA: ${_userProfileModel?.user?.lga??'Not Found'}',
+                                'LGA: ${_userProfileModel?.lga??'Not Found'}',
                                 maxLines: 1,
                                 style: primaryTextStyle(color: white, size: 15),
                               ),

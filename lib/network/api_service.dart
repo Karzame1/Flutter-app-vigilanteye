@@ -27,6 +27,15 @@ class ApiService {
         await postRequest(APIRoutes.setAlertRead, {"alertId": id}));
     return checkSuccessCase(response);
   }
+  //update alert status
+  Future updateAlertStatus(int id) async {
+    var response = await handleResponse(
+        await postRequest(APIRoutes.updateAlertStatus,
+            {'alert_id': 184,
+              'status' : 'sent',
+              'is_read': 1}));
+    return checkSuccessCase(response);
+  }
 
   Future<List<SosAlertModel>> getAlerts() async {
     var response = await handleResponse(await getRequest(APIRoutes.getAlerts));
@@ -74,14 +83,14 @@ class ApiService {
   }
 
   //get user profile model
-  Future<UserProfileModel?> getUserProfile(String id) async {
+  Future<User?> getUserProfile(String id) async {
     var response = await handleResponse(await postRequest(APIRoutes.profileURL,
         {'id' : id}));
     debugPrint("users data --> ${response?.data}");
     if(!checkSuccessCase(response)) return null;
-    var userProfileModel = UserProfileModel.fromJson(response?.data);
-    debugPrint("users data --> ${userProfileModel.user?.team?.name}");
-    return userProfileModel;
+    var user = User.fromJson(response?.data);
+    debugPrint("users data --> ${user.team?.name}");
+    return user;
   }
 
   Future<ClientModelSkipTake?> getClientsWithSkipTake(

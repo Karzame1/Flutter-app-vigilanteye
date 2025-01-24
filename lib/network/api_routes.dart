@@ -46,6 +46,9 @@ class APIRoutes {
   //Dashboard
   static const getDashboardData = '${baseURL}getDashboardData';
 
+  //
+  static const updateAlertStatus = '${baseURL}update_alert_status';
+
   //Leave
   static const getLeaveTypesURL = '${baseURL}getLeaveTypes';
   static const addLeaveRequest = '${baseURL}createLeaveRequest';
