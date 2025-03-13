@@ -12,7 +12,9 @@ class APIRoutes {
 
   // static const baseURL = "http://162.0.232.56:44316/api/V1/";
   //static const baseURL = "http://162.213.255.34:44316/api/V1/";
-  static const baseURL = "https://crimealert.network/api/V1/";
+  // static const baseURL = "https://crimealert.network/api/V1/";
+  // static const baseURL = "https://vigilanteye.net/api/v1/";
+  static const baseURL = "https://vigilanteye.net/api/V1/";
   //Alerts
   static const getAlerts = '${baseURL}getAlerts';
   static const setAlertRead = '${baseURL}setAlertRead';
