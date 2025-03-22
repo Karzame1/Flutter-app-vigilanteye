@@ -302,7 +302,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
   User? _userProfileModel;
   void getUserProfile() async {
     var result = await apiRepo.getUserProfile(getStringAsync(userIdPref));
-    debugPrint("data $result");
+    debugPrint("data ayya h $result");
     _userProfileModel = result ;
     setState(() {});
   }

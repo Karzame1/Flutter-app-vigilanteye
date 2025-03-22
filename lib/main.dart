@@ -53,6 +53,8 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
       /*options: DefaultFirebaseOptions.currentPlatform*/
   );
   await setupFlutterNotifications();
+  // await FirebaseMessaging.instance.getToken();
+  String? token = await FirebaseMessaging.instance.getToken();
   showFlutterNotification(message);
   // If you're going to use other Firebase services in the background, such as Firestore,
   // make sure you call `initializeApp` before using other Firebase services.
@@ -95,6 +97,7 @@ Future<void> setupFlutterNotifications() async {
     badge: true,
     sound: true,
   );
+
   isFlutterLocalNotificationsInitialized = true;
 }
 
@@ -128,21 +131,31 @@ void main() async {
       getStringAsync(SELECTED_LANGUAGE_CODE, defaultValue: defaultLanguage));
   defaultRadius = 10;
   defaultToastGravityGlobal = ToastGravity.BOTTOM;
-  final GoogleMapsFlutterPlatform mapsImplementation =
+  /*final GoogleMapsFlutterPlatform mapsImplementation =
       GoogleMapsFlutterPlatform.instance;
   if (mapsImplementation is GoogleMapsFlutterAndroid) {
     mapsImplementation.useAndroidViewSurface = true;
     mapsImplementation.initializeWithRenderer(AndroidMapRenderer.latest);
-  }
+  }*/
+  try {
+    final GoogleMapsFlutterPlatform mapsImplementation =
+        GoogleMapsFlutterPlatform.instance;
 
+    if (mapsImplementation is GoogleMapsFlutterAndroid) {
+      await mapsImplementation.initializeWithRenderer(AndroidMapRenderer.latest);
+    }
+  } catch (e) {
+    debugPrint('Google Maps Renderer already initialized: $e');
+  }
   //Configure firebase using firebase cli or comment this if block for testing
   if (!isWeb) {
     await Firebase.initializeApp(
       options: const FirebaseOptions(
           apiKey: 'AIzaSyBLj5aUww5ms23bYjFfH_ASSRBZvh4-tRA',
           appId: '1:1026506644102:android:30fed71d39f384d7924f07',
-          messagingSenderId: '1026506644102	',
-          projectId: "causal-scarab-356404")
+          messagingSenderId: '1026506644102',
+          projectId: 'causal-scarab-356404'
+      )
         /*options: DefaultFirebaseOptions.currentPlatform*/
     );
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
@@ -197,7 +210,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
-Future<void> initializeService() async {
+/*Future<void> initializeService() async {
   final service = FlutterBackgroundService();
 
   const AndroidNotificationChannel channel = AndroidNotificationChannel(
@@ -246,6 +259,44 @@ Future<void> initializeService() async {
       onForeground: onStart,
 
       // you have to enable background fetch capability on xcode project
+      onBackground: onIosBackground,
+    ),
+  );
+
+  service.startService();
+}*/
+Future<void> initializeService() async {
+  final service = FlutterBackgroundService();
+
+
+  const AndroidNotificationChannel channel = AndroidNotificationChannel(
+    'my_foreground', // id
+    'MY FOREGROUND SERVICE', // title
+    description:
+    'This channel is used for important notifications.', // description
+    importance: Importance.low, // importance must be at low or higher level
+  );
+
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+  FlutterLocalNotificationsPlugin();
+
+  await flutterLocalNotificationsPlugin
+      .resolvePlatformSpecificImplementation<
+      AndroidFlutterLocalNotificationsPlugin>()
+      ?.createNotificationChannel(channel);
+
+  await service.configure(
+    androidConfiguration: AndroidConfiguration(
+      onStart: onStart,
+      isForegroundMode: true,
+      notificationChannelId: 'my_foreground',
+      initialNotificationTitle: '$mainAppName Background Service',
+      initialNotificationContent: 'Initializing',
+      foregroundServiceNotificationId: 888,
+
+    ),
+    iosConfiguration: IosConfiguration(
+      onForeground: onStart,
       onBackground: onIosBackground,
     ),
   );

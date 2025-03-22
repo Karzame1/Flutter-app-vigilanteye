@@ -12,7 +12,10 @@ class APIRoutes {
 
   // static const baseURL = "http://162.0.232.56:44316/api/V1/";
   //static const baseURL = "http://162.213.255.34:44316/api/V1/";
-  static const baseURL = "https://crimealert.network/api/V1/";
+  // static const baseURL = "https://crimealert.network/api/V1/";
+  // static const baseURL = "https://vigilanteye.net/api/v1/";
+  static const baseURL = "https://vigilanteye.net/api/V1/";
+  // static const baseURL = "https://vigilanteye.net/api/";
   //Alerts
   static const getAlerts = '${baseURL}getAlerts';
   static const setAlertRead = '${baseURL}setAlertRead';
@@ -49,6 +52,9 @@ class APIRoutes {
   //
   static const updateAlertStatus = '${baseURL}update_alert_status';
 
+  //user-update
+  static const updateUserStatus = '${baseURL}webhook/mobile-data';
+
   //Leave
   static const getLeaveTypesURL = '${baseURL}getLeaveTypes';
   static const addLeaveRequest = '${baseURL}createLeaveRequest';
@@ -60,7 +66,7 @@ class APIRoutes {
   static const checkDevice = '${baseURL}checkDevice';
   static const registerDevice = '${baseURL}registerDevice';
   static const updateDeviceStatus = '${baseURL}updateDeviceStatus';
-
+  // https://vigilanteye.net/api/V1/updateDeviceStatus
   //Attendance
   static const checkInOut = '${baseURL}attendance/checkInOut';
   static const updateAttendanceStatus = '${baseURL}attendance/statusUpdate';

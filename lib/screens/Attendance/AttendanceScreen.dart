@@ -574,6 +574,7 @@ class AttendanceScreenState extends State<AttendanceScreen> {
                                                       negativeText:
                                                           language!.lblNo,
                                                       onAccept: (c) async {
+                                                        await _store.checkInStatus('On Duty','Moving','Accepted');
                                                         await _store.checkInOut(
                                                             'checkin');
                                                       },
@@ -596,6 +597,7 @@ class AttendanceScreenState extends State<AttendanceScreen> {
                                                         negativeText:
                                                             language!.lblNo,
                                                         onAccept: (c) async {
+                                                          await _store.checkInStatus('On Duty','Moving','Accepted');
                                                           await _store
                                                               .checkInOut(
                                                                   'checkin');
@@ -615,6 +617,7 @@ class AttendanceScreenState extends State<AttendanceScreen> {
                                                         negativeText:
                                                             language!.lblNo,
                                                         onAccept: (c) async {
+                                                          await _store.checkInStatus('On Duty','Moving','Accepted');
                                                           await _store
                                                               .checkInOut(
                                                                   'checkin');
@@ -679,6 +682,7 @@ class AttendanceScreenState extends State<AttendanceScreen> {
                                                           negativeText:
                                                               language!.lblNo,
                                                           onAccept: (c) async {
+                                                            await _store.checkInStatus('Off Duty','Stationary','Declined');
                                                             await _store
                                                                 .checkInOut(
                                                                     'checkout');
@@ -705,6 +709,7 @@ class AttendanceScreenState extends State<AttendanceScreen> {
                                                                 language!.lblNo,
                                                             onAccept:
                                                                 (c) async {
+                                                                  await _store.checkInStatus('Off Duty','Stationary','Declined');
                                                               await _store
                                                                   .checkInOut(
                                                                       'checkout');
@@ -726,6 +731,7 @@ class AttendanceScreenState extends State<AttendanceScreen> {
                                                                 language!.lblNo,
                                                             onAccept:
                                                                 (c) async {
+                                                                  await _store.checkInStatus('Off Duty','Stationary','Declined');
                                                               await _store
                                                                   .checkInOut(
                                                                       'checkout');

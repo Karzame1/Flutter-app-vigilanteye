@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:battery_plus/battery_plus.dart';
 import 'package:flutter/cupertino.dart';
@@ -8,6 +9,7 @@ import 'package:location/location.dart';
 import 'package:mobx/mobx.dart';
 import 'package:nb_utils/nb_utils.dart';
 
+import '../../Utils/app_constants.dart';
 import '../../main.dart';
 import '../../models/sos_model.dart';
 
@@ -49,96 +51,7 @@ abstract class AttendanceStoreBase with Store {
 
   }
 
-  /*LocationData? currentLocation;
-void getCurrentLocation() async {
-    Location location = Location();
-location.getLocation().then(
-      (location) {
-        currentLocation = location;
-      },
-    );
-GoogleMapController googleMapController = await _controller.future;
-location.onLocationChanged.listen(
-      (newLoc) {
-        currentLocation = newLoc;
-googleMapController.animateCamera(
-          CameraUpdate.newCameraPosition(
-            CameraPosition(
-              zoom: 13.5,
-              target: LatLng(
-                newLoc.latitude!,
-                newLoc.longitude!,
-              ),
-            ),
-          ),
-        );
-setState(() {});
-      },
-    );
-  }*/
 
-  /*BitmapDescriptor sourceIcon = BitmapDescriptor.defaultMarker;
-BitmapDescriptor destinationIcon = BitmapDescriptor.defaultMarker;
-BitmapDescriptor currentLocationIcon = BitmapDescriptor.defaultMarker;
-void setCustomMarkerIcon() {
-  BitmapDescriptor.fromAssetImage(
-          ImageConfiguration.empty, "assets/Pin_source.png")
-      .then(
-    (icon) {
-      sourceIcon = icon;
-    },
-  );
-  BitmapDescriptor.fromAssetImage(
-          ImageConfiguration.empty, "assets/Pin_destination.png")
-      .then(
-    (icon) {
-      destinationIcon = icon;
-    },
-  );
-  BitmapDescriptor.fromAssetImage(
-          ImageConfiguration.empty, "assets/Badge.png")
-      .then(
-    (icon) {
-      currentLocationIcon = icon;
-    },
-  );
-}*/
-
-  /*double calculateBearing(LatLng startPoint, LatLng endPoint) {
-    final double startLat = toRadians(startPoint.latitude);
-    final double startLng = toRadians(startPoint.longitude);
-    final double endLat = toRadians(endPoint.latitude);
-    final double endLng = toRadians(endPoint.longitude);
-
-    final double deltaLng = endLng - startLng;
-
-    final double y = Math.sin(deltaLng) * Math.cos(endLat);
-    final double x = Math.cos(startLat) * Math.sin(endLat) -
-        Math.sin(startLat) * Math.cos(endLat) * Math.cos(deltaLng);
-
-    final double bearing = Math.atan2(y, x);
-
-    return (toDegrees(bearing) + 360) % 360;
-  }
-
-  double toRadians(double degrees) {
-    return degrees * (Math.pi / 180.0);
-  }
-
-  double toDegrees(double radians) {
-    return radians * (180.0 / Math.pi);
-  }
-Then, you can use this to rotate the Marker like this:
-
-Marker(
-   markerId: MarkerId(currentPosition.toString()),
-   position: currentPosition,
-   icon: movementArrow,  // Custom arrow Marker
-   // Rotate the arrow in direction of movement. Func is defined below
-   rotation: calculateBearing(previousPosition, currentPosition) - 90,
-   anchor: const Offset(0.5, 0.5),
-);
-*/
 
   @observable
   bool isLoading = true;
@@ -194,5 +107,31 @@ Marker(
     toast('Successfully $status');
     isLoading = false;
     return true;
+  }
+
+  Future checkInStatus(String status,String move,String feedback) async {
+    isLoading = true;
+    var location = await locationService.getLocation();
+    var battery = Battery();
+
+    Map req = {
+      "user": {
+        "user_id": getStringAsync(userIdPref),
+        "username": getStringAsync(firstNamePref),
+        "battery_level": await battery.batteryLevel,
+        "duty_status": status,
+        "movement_status": move,
+        "feedback": feedback,
+        "latitude": location.latitude ?? 0.0,
+        "longitude": location.longitude ?? 0.0,
+      }
+    };
+    print("oooo--->$req");
+    var result = await apiRepo.checkStatus(req);
+    print("llll--->${result.message}");
+    if(!result.isSuccess){
+      toast(result.message);
+      return false;
+    }
   }
 }

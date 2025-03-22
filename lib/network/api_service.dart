@@ -151,7 +151,14 @@ class ApiService {
     res.isSuccess = true;
     return res;
   }
-
+  //Live-Location
+  Future<Result> checkStatus(Map req) async {
+    Result res = Result();
+    var result =
+      await handleResponse(await postRequest(APIRoutes.updateUserStatus, req));
+      res.message = result!.message;
+      return res;
+  }
   //Expense
   Future<List<ExpenseTypeModel>> getExpenseTypes() async {
     var response =
