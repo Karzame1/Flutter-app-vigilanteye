@@ -112,6 +112,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
   void setupFirebase() {
     FirebaseMessaging.onMessage.listen((RemoteMessage event) {
       log("message received fdgfggf${event.data}");
+      log("event hua h ${event.data["alert_id"]}");
       log(event.notification!.body);
       showDialog(
           context: context,
@@ -121,7 +122,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
                 backgroundColor: appStore.isDarkModeOn?black:white,
                 child: SosAlertDialog(
                     sosAlertModel: SosAlertModel(
-                      id: event.data["id"],
+                      id: event.data["alert_id"],
                   userName: event.data["user_Name"],
                   userPhone: event.data["user_Phone"],
                   message: event.data["alert_message"],
@@ -133,11 +134,13 @@ class _NavigationScreenState extends State<NavigationScreen> {
                 ),
                   onLocateVictim: (lat,long) async{
                       try {
-                        final updated = await apiRepo.updateAlertStatus(event.data["id"]??'');
+                        debugPrint("kite-->${event.data}");
+                        /*final updated = await apiRepo.updateAlertStatus(event.data["id"]??'');
+
                         if(!updated){
                           toast("Not updated!, please try again!,");
                           return;
-                        }
+                        }*/
                         setState(() {
                           if (lat != null && long != null) {
                             _latlong = (lat, long);
@@ -196,25 +199,8 @@ class _NavigationScreenState extends State<NavigationScreen> {
             )*/;
           });
     });
-    FirebaseMessaging.onMessageOpenedApp.listen((event) {
-      log('Message clicked!');
-      debugPrint("notification data --> ${event.data}");
-      /*showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text(language!.lblNotification),
-              content: Text(message.data["alert"]!),
-              actions: [
-                TextButton(
-                  child: Text(language!.lblOk),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                )
-              ],
-            );
-          });*/
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage event) {
+      debugPrint("notification data aaya  --> ${event.data}");
       showDialog(
           context: context,
           builder: (BuildContext context) {
@@ -234,11 +220,11 @@ class _NavigationScreenState extends State<NavigationScreen> {
                 ),
                   onLocateVictim: (lat,long) async{
                     try {
-                      final updated = await apiRepo.updateAlertStatus(event.data["id"]??'');
+                      /*final updated = await apiRepo.updateAlertStatus(event.data["id"]??'');
                       if(!updated){
                         toast("Not updated!, please try again!,");
                         return;
-                      }
+                      }*/
                       setState(() {
                         if (lat != null && long != null) {
                           _latlong = (lat, long);
@@ -254,55 +240,64 @@ class _NavigationScreenState extends State<NavigationScreen> {
                     }
                   },
                 ),
-              )
-            /*Dialog(
-              backgroundColor: black,
-              child: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(20),
-                      child: Image.network
-                        (
-                        "https://img.freepik.com/free-photo/young-bearded-man-with-striped-shirt_273609-5677.jpg?t=st=1721395266~exp=1721398866~hmac=3a2cd39e4b565f4f755d0b8e5b31e2799cb133daec956289e175088f86860340&w=1380",
-                        width: 300,
-                        height: 160,
-                        fit: BoxFit.fill,
-                        errorBuilder: (_,loading, loadingPercentage){
-                          return CupertinoActivityIndicator(color: white,);
-                        },
-                      ),
-                    ),
-                    10.height,
-                    Center(child: Text("Kidnapping Alert", style: TextStyle(color: purple,fontSize: 18),)),
-                    10.height,
-                    Center(
-                        child: Flexible(
-                            child: Text("Kidnapping Alertjd dfdfh dskjgbdjkgds hdsjhgskjd ghgh fhhjhd hffh fdjf bdjfb dfbhj gndj ", style: TextStyle(color: white,fontSize: 18),textAlign: TextAlign.center,))),
-                    10.height,
-                    ElevatedButton(
-                        onPressed: (){},
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: greenColor,
-                          foregroundColor: white
-                        ),
-                        child: Text("Locate Victim"),
-                    )
-
-                  ],
-                ),
-              ),
-            )*/;
+              );
           });
+    });
+    FirebaseMessaging.instance.getInitialMessage().then((event){
+      if(event!=null) {
+        debugPrint("notification from background  --> ${event.data}");
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return
+                Dialog(
+                  backgroundColor: appStore.isDarkModeOn ? black : white,
+                  child: SosAlertDialog(sosAlertModel: SosAlertModel(
+                      id: event.data["id"],
+                      userName: event.data["user_Name"],
+                      userPhone: event.data["user_Phone"],
+                      message: event.data["alert_message"],
+                      // message: event.notification!.body,
+                      userImage: event.data["user_Img"],
+                      type: event.data["alert_type"],
+                      latitude: event.data["Latitude"],
+                      longitude: event.data["Longitude"]
+                  ),
+                    onLocateVictim: (lat, long) async {
+                      try {
+                        /*final updated = await apiRepo.updateAlertStatus(
+                            event.data["id"] ?? '');
+                        if (!updated) {
+                          toast("Not updated!, please try again!,");
+                          return;
+                        }*/
+                        setState(() {
+                          if (lat != null && long != null) {
+                            _latlong = (lat, long);
+                            _currentIndex = 0;
+                            attendanceScreenKey.currentState?.reinitialize();
+                          } else {
+                            _latlong = (0, 0);
+                          }
+                        });
+                      } on Exception catch (e) {
+                        debugPrint("error $e");
+                        toast(e.toString());
+                      }
+                    },
+                  ),
+                );
+            });
+      }
     });
   }
 
   User? _userProfileModel;
   void getUserProfile() async {
-    var result = await apiRepo.getUserProfile(getStringAsync(userIdPref));
-    debugPrint("data ayya h $result");
+    debugPrint("like Bhai===>${sharedHelper.getUserId()}");
+    // var result = await apiRepo.getUserProfile(getStringAsync(userIdPref));
+    var result = await apiRepo.getUserProfile(sharedHelper.getUserId());
+    debugPrint("data ayya h --> ${result!.coy!.id}");
     _userProfileModel = result ;
     setState(() {});
   }
@@ -605,13 +600,14 @@ Dark Mode
 Rate Us
 Disable settings*/
         child: Container(
+          padding: EdgeInsets.only(bottom: 10),
           color: appStore.appBarColor,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Column(
                 children: [
-                  DrawerHeader(
+                  /*DrawerHeader(
                     decoration: const BoxDecoration(color: opPrimaryColor),
                     child: Row(
                       children: [
@@ -672,11 +668,85 @@ Disable settings*/
                               ),
                             ],
                           ),
-                        )
+                        ),
                       ],
                     ),
+                  ),*/
+
+          DrawerHeader(
+          decoration: const BoxDecoration(color: opPrimaryColor),
+          child: Row(
+            children: [
+              const SizedBox(
+                width: 8,
+              ),
+              SizedBox(
+                width: 260,
+
+                child: _userProfileModel == null
+                    ? const Center(
+                  child: Text(
+                    "Loading Details...",
+                    style: TextStyle(color: Colors.white, fontSize: 16),
                   ),
-                  // UserAccountsDrawerHeader(
+                )
+                    : Padding(
+                  padding: const EdgeInsets.only(bottom: 8.0), // Added padding at the bottom
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Flexible(
+                            flex: 4,
+                            child: Text(
+                              _userProfileModel?.roleType == 0
+                                  ? _userProfileModel?.team?.name ?? 'Not Found'
+                                  : _userProfileModel?.coy?.name ?? 'Not Found',
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: primaryTextStyle(color: white, size: 18),
+                            ),
+                          ),
+                          if (_userProfileModel?.coy?.imageUrl != null ||
+                              _userProfileModel?.team?.imageUrl != null)
+                            Flexible(
+                              flex: 1,
+                              child: Image.network(
+                                _userProfileModel?.roleType == 0
+                                    ? _userProfileModel?.team?.imageUrl ?? ''
+                                    : _userProfileModel?.coy?.imageUrl ?? '',
+                              ),
+                            )
+                        ],
+                      ),
+                      Text(
+                        'Division: ${_userProfileModel?.division ?? 'Not Found'}',
+                        maxLines: 1,
+                        style: primaryTextStyle(color: white, size: 18),
+                      ),
+                      Text(
+                        sharedHelper.getFullName().toUpperCase(),
+                        maxLines: 1,
+                        style: primaryTextStyle(color: white, size: 16),
+                      ),
+                      Text(
+                        'LGA: ${_userProfileModel?.lga ?? 'Not Found'}',
+                        maxLines: 1,
+                        style: primaryTextStyle(color: white, size: 15),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+
+        // UserAccountsDrawerHeader(
                   //   decoration: const BoxDecoration(color: opPrimaryColor),
                   //   accountName: Text(
                   //     // '${getStringAsync(appCountryPhoneCodePref)} ${getStringAsync(phoneNumberPref)}',
@@ -851,3 +921,5 @@ Disable settings*/
     );
   }
 }
+
+

@@ -39,7 +39,6 @@ class _SosAlertDialogState extends State<SosAlertDialog> {
   void initState() {
     super.initState();
   }
-
   /*{
     "latitude": 31.554492,
     "longitude": 74.3634996,
@@ -75,20 +74,27 @@ class _SosAlertDialogState extends State<SosAlertDialog> {
           style: secondaryTextStyle(color:appStore.isDarkModeOn?white:null),
         ),
         20.height,
-        button(
-            'Locate Victim',
+        button(color: Colors.green,
+            'Accept & Locate',
             onTap: () {
-              debugPrint("locating ${widget.sosAlertModel.latitude??''} ${widget.sosAlertModel.longitude??''}");
-          // apiRepo.setAlertAsRead(widget.sosAlertModel.id!);
+              debugPrint("locating aaya ${widget.sosAlertModel.latitude.toDouble()??''} ${widget.sosAlertModel.longitude.toDouble()??''}");
+          log("id aaya h->${widget.sosAlertModel.id}");
+          apiRepo.setAlertAsRead(widget.sosAlertModel.id??'');
+          apiRepo.updateAlertStatus(widget.sosAlertModel.id!,"true");
           if(widget.onLocateVictim != null){
             widget.onLocateVictim!(
-                double.tryParse(widget.sosAlertModel.latitude??'',), double.tryParse(widget.sosAlertModel.longitude??""));
+                double.tryParse(widget.sosAlertModel.latitude??'',), double.tryParse(widget.sosAlertModel.longitude??''));
           }
-          // MapsLauncher.launchCoordinates(
-          //   widget.sosAlertModel.latitude.toDouble(),
-          //   widget.sosAlertModel.longitude.toDouble(),
-          //   widget.sosAlertModel.userName!,
-          // );
+          /*MapsLauncher.launchCoordinates(
+            widget.sosAlertModel.latitude.toDouble(),
+            widget.sosAlertModel.longitude.toDouble(),
+            widget.sosAlertModel.userName!,
+          );*/
+              MapsLauncher.launchCoordinates(
+                double.tryParse(widget.sosAlertModel.latitude??'',)!,
+                double.tryParse(widget.sosAlertModel.longitude??'',)!,
+                widget.sosAlertModel.userName!,
+              );
               Future.delayed(Duration.zero,(){
                // const NavigationScreen().launch(context, isNewTask: true);
               });
@@ -96,6 +102,16 @@ class _SosAlertDialogState extends State<SosAlertDialog> {
            // widget.isTaped(true);
           finish(context);
         }).paddingOnly(bottom: 16),
+        10.height,
+        button(
+          color: Colors.red,
+          'Decline',
+          onTap: () {
+            debugPrint("Decline button pressed");
+            apiRepo.updateAlertStatus(widget.sosAlertModel.id!,"false");
+            finish(context);
+          },
+        ).paddingOnly(bottom: 16),
       ],
     ).paddingAll(16);
   }

@@ -80,7 +80,40 @@ Future<void> setupFlutterNotifications() async {
   );
 
   flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+  Future<void> onNotificationTap(String? payload) async {
+    print('Notification clicked! Payload: $payload');
 
+    // Show the dialog
+    showDialog(
+      context: navigatorKey.currentContext!, // Make sure to use a valid context
+      builder: (context) => AlertDialog(
+        title: Text('Notification Clicked'),
+        content: Text(
+            'This is an example dialog that shows up after clicking the notification.'),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context)
+                  .pop();
+            },
+            child: Text('OK'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  flutterLocalNotificationsPlugin.initialize(
+    const InitializationSettings(
+      android: AndroidInitializationSettings('@mipmap/ic_launcher'),
+    ),
+    onDidReceiveNotificationResponse:
+        (NotificationResponse notificationResponse) {
+      onNotificationTap(notificationResponse.payload);
+    },
+  );
+
+// This should be placed inside the "setupFlutterNotifications()" function after  "flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();"
   /// Create an Android Notification Channel.
   ///
   /// We use this channel in the `AndroidManifest.xml` file to override the

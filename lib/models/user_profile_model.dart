@@ -105,7 +105,7 @@ class User {
   final dynamic operationalStateId;
   final dynamic userTypeId;
   final dynamic cRoleId;
-  final int? roleType;
+  final String? roleType;
   final DateTime? createdAt;
   final DateTime? updatedAt;
   final List<Role> roles;

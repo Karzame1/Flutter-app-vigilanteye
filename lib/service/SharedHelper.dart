@@ -10,7 +10,9 @@ class SharedHelper {
   String getFullName() {
     return '${getStringAsync(firstNamePref)} ${getStringAsync(lastNamePref)}';
   }
-
+  String getUserId() {
+    return getStringAsync(userIdPref);
+  }
   void logout() async {
     clearSharedPref();
     toast(language!.lblLoggedOutSuccessfully);

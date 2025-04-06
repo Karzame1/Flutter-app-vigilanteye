@@ -12,7 +12,7 @@ class SosAlertModel {
   }
 */
 
-  int? id;
+  String? id;
   String? latitude;
   String? longitude;
   String? userName;

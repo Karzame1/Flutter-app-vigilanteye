@@ -1,3 +1,4 @@
+import 'package:fieldmanager_hrms_flutter/Utils/app_constants.dart';
 import 'package:fieldmanager_hrms_flutter/models/Client/client_model.dart';
 import 'package:fieldmanager_hrms_flutter/models/Client/client_model_skip_take.dart';
 import 'package:fieldmanager_hrms_flutter/models/Expense/expense_request_model.dart';
@@ -8,6 +9,7 @@ import 'package:fieldmanager_hrms_flutter/models/dashboard_model.dart';
 import 'package:fieldmanager_hrms_flutter/models/status/status_response.dart';
 import 'package:fieldmanager_hrms_flutter/models/user_profile_model.dart';
 import 'package:fieldmanager_hrms_flutter/network/result.dart';
+import 'package:fieldmanager_hrms_flutter/service/SharedHelper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:nb_utils/nb_utils.dart';
 
@@ -21,19 +23,22 @@ import 'network_utils.dart';
 
 class ApiService {
   //Alerts
-
-  Future setAlertAsRead(int id) async {
+  SharedHelper sharedHelper = SharedHelper();
+  Future setAlertAsRead(String id) async {
     var response = await handleResponse(
         await postRequest(APIRoutes.setAlertRead, {"alertId": id}));
     return checkSuccessCase(response);
   }
   //update alert status
-  Future updateAlertStatus(int id) async {
+  Future updateAlertStatus(String id,String status) async {
+    debugPrint("h aaaya h--->$id ----------------- ${sharedHelper.getUserId()}");
     var response = await handleResponse(
         await postRequest(APIRoutes.updateAlertStatus,
-            {'alert_id': 184,
-              'status' : 'sent',
-              'is_read': 1}));
+            {
+              'alert_id': id,
+              'status' : status,
+              'user_id': sharedHelper.getUserId()}));
+    debugPrint("response aaya-->$response");
     return checkSuccessCase(response);
   }
 
@@ -88,8 +93,8 @@ class ApiService {
         {'id' : id}));
     debugPrint("users data --> ${response?.data}");
     if(!checkSuccessCase(response)) return null;
-    var user = User.fromJson(response?.data);
-    debugPrint("users data --> ${user.team?.name}");
+    var user = User.fromJson(response?.data['user']);
+    debugPrint("aaya hu-->${user.division}");
     return user;
   }
 
