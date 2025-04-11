@@ -55,6 +55,7 @@ class ApiService {
   Future<bool> createVisit(Map<String, String> req, String filePath) async {
     var result =
         await multipartRequestWithData(APIRoutes.createVisitURL, filePath, req);
+    log("response submit new-->$result");
     if (result.statusCode == 200) {
       return true;
     }
@@ -94,7 +95,6 @@ class ApiService {
     debugPrint("users data --> ${response?.data}");
     if(!checkSuccessCase(response)) return null;
     var user = User.fromJson(response?.data['user']);
-    debugPrint("aaya hu-->${user.division}");
     return user;
   }
 
@@ -276,9 +276,11 @@ class ApiService {
   Future<StatusResponse?> checkAttendanceStatus() async {
     var response =
         await handleResponse(await getRequest(APIRoutes.checkAttendanceStatus));
+
     if (!checkSuccessCase(response)) return null;
 
     var status = StatusResponse.fromJson(response?.data);
+    log("response Status--->$status");
     return status;
   }
 

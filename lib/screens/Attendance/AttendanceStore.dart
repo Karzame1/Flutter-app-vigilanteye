@@ -89,10 +89,12 @@ abstract class AttendanceStoreBase with Store {
       "isWifiOn": connectivityResult == ConnectivityResult.wifi,
       "signalStrength": connectivityResult == ConnectivityResult.mobile ? 5 : 0
     };
-
+    log("request is:---$req");
     var result = await apiRepo.checkInOut(req);
+    log("give value-->$result");
     if (!result.isSuccess) {
       toast(result.message);
+      isLoading = false;
       return false;
     }
     var statusResult = await apiRepo.checkAttendanceStatus();

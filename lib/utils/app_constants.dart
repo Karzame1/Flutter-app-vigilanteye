@@ -22,6 +22,9 @@ const alternateNumberPref = 'alternateNumberPref';
 const statusPref = 'statusPref';
 const joinedAtPref = 'joinedAtPref';
 
+
+const alertIdPref = 'alert_id';
+
 const tenantPref = 'tenantIdPref';
 
 const privacyPolicyUrlPref = 'privacyPolicyUrlPref';

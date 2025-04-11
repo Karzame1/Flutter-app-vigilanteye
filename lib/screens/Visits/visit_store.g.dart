@@ -76,11 +76,11 @@ mixin _$VisitStore on VisitStoreBase, Store {
   late final _$submitAsyncAction =
       AsyncAction('VisitStoreBase.submit', context: context);
 
-  @override
+  /*@override
   Future<bool> submit(String filePath, String comments, String clientId) {
     return _$submitAsyncAction
         .run(() => super.submit(filePath, comments, clientId));
-  }
+  }*/
 
   @override
   String toString() {

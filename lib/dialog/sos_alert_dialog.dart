@@ -4,6 +4,7 @@ import 'package:fieldmanager_hrms_flutter/Widgets/button_widget.dart';
 import 'package:fieldmanager_hrms_flutter/main.dart';
 import 'package:fieldmanager_hrms_flutter/models/sos_model.dart';
 import 'package:fieldmanager_hrms_flutter/screens/Attendance/AttendanceScreen.dart';
+import 'package:fieldmanager_hrms_flutter/utils/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:maps_launcher/maps_launcher.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -76,8 +77,8 @@ class _SosAlertDialogState extends State<SosAlertDialog> {
         20.height,
         button(color: Colors.green,
             'Accept & Locate',
-            onTap: () {
-              debugPrint("locating aaya ${widget.sosAlertModel.latitude.toDouble()??''} ${widget.sosAlertModel.longitude.toDouble()??''}");
+            onTap: () async {
+          await setValue(alertIdPref, widget.sosAlertModel.id);
           log("id aaya h->${widget.sosAlertModel.id}");
           apiRepo.setAlertAsRead(widget.sosAlertModel.id??'');
           apiRepo.updateAlertStatus(widget.sosAlertModel.id!,"true");

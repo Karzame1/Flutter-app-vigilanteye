@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:fieldmanager_hrms_flutter/main.dart';
 import 'package:fieldmanager_hrms_flutter/models/Client/client_model.dart';
 import 'package:flutter/widgets.dart';
@@ -65,7 +67,7 @@ abstract class VisitStoreBase with Store {
   }
 
   @action
-  Future<bool> submit(String filePath, String comments, String clientId) async {
+  Future<bool> submit_new(String filePath, String comments) async {
     isLoading = true;
 
     Position position = await Geolocator.getCurrentPosition(
@@ -76,16 +78,23 @@ abstract class VisitStoreBase with Store {
         : await mapHelper
             .getAddress(LatLng(position.latitude, position.longitude));
 
-    var req = {
+    /*var req = {
       "clientId": selectedClient!.id.toString(),
       "remarks": comments,
       "latitude": position.latitude.toString(),
       "longitude": position.longitude.toString(),
       "address": address ?? ""
+    };*/
+    var req = {
+      "alert_id": sharedHelper.getAlertId(),
+      "remarks": comments,
+      "latitude": position.latitude.toString(),
+      "longitude": position.longitude.toString()
     };
-
+    log("request submit-->$req");
     var result = await apiRepo.createVisit(req, filePath);
     isLoading = false;
+    log("response submit-->$result");
     return result;
   }
 }

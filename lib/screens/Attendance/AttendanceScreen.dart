@@ -107,16 +107,22 @@ class AttendanceScreenState extends State<AttendanceScreen> {
       // setState(() {});
     });
    FlutterCompass.events?.listen((CompassEvent event) {
-      setState(() {
-        _direction = event.heading;
-      });
+     if(mounted) {
+       setState(() {
+         _direction = event.heading;
+       });
+     }
     });
     _store.getData();
-    auth.isDeviceSupported().then(
-          (bool isSupported) => setState(() => _supportState = isSupported
-              ? _SupportState.supported
-              : _SupportState.unsupported),
-        );
+    if(mounted) {
+      auth.isDeviceSupported().then(
+            (bool isSupported) =>
+            setState(() =>
+            _supportState = isSupported
+                ? _SupportState.supported
+                : _SupportState.unsupported),
+      );
+    }
   }
 
   final LatLng _center = const LatLng(45.521563, -122.677433);
@@ -136,10 +142,11 @@ class AttendanceScreenState extends State<AttendanceScreen> {
     if (!mounted) {
       return;
     }
-
-    setState(() {
-      _canCheckBiometrics = canCheckBiometrics;
-    });
+    if(mounted) {
+      setState(() {
+        _canCheckBiometrics = canCheckBiometrics;
+      });
+    }
   }
 
   Future<void> _getAvailableBiometrics() async {
@@ -153,18 +160,21 @@ class AttendanceScreenState extends State<AttendanceScreen> {
     if (!mounted) {
       return;
     }
-
-    setState(() {
-      _availableBiometrics = availableBiometrics;
-    });
+    if(mounted) {
+      setState(() {
+        _availableBiometrics = availableBiometrics;
+      });
+    }
   }
 
   Future _authenticate() async {
     bool authenticated = false;
     try {
-      setState(() {
-        _isAuthenticating = true;
-      });
+      if(mounted) {
+        setState(() {
+          _isAuthenticating = true;
+        });
+      }
 
       authenticated = await auth.authenticate(
           localizedReason: language!.lblScanYourFingerprintToCheckIn,
@@ -191,27 +201,31 @@ class AttendanceScreenState extends State<AttendanceScreen> {
                 ),
           ]);
       _authorized = authenticated;
-      setState(() {
-        _isAuthenticating = false;
-      });
+      if(mounted) {
+        setState(() {
+          _isAuthenticating = false;
+        });
+      }
     } on PlatformException catch (e) {
       log('Auth error$e');
     }
 
     if (!mounted) return false;
-
-    setState(() {
-      _authorized = authenticated;
-    });
-
+    if(mounted) {
+      setState(() {
+        _authorized = authenticated;
+      });
+    }
   }
 
   Future<void> _authenticateWithBiometrics() async {
     bool authenticated = false;
     try {
-      setState(() {
-        _isAuthenticating = true;
-      });
+      if(mounted) {
+        setState(() {
+          _isAuthenticating = true;
+        });
+      }
       authenticated = await auth.authenticate(
         localizedReason:
             'Scan your fingerprint (or face or whatever) to authenticate',
@@ -220,26 +234,29 @@ class AttendanceScreenState extends State<AttendanceScreen> {
           biometricOnly: true,
         ),
       );
-
-      setState(() {
-        _isAuthenticating = false;
-      });
-
+      if(mounted) {
+        setState(() {
+          _isAuthenticating = false;
+        });
+      }
     } on PlatformException catch (e) {
       debugPrint(e.toString());
-      setState(() {
-        _isAuthenticating = false;
-      });
+      if(mounted) {
+        setState(() {
+          _isAuthenticating = false;
+        });
+      }
       return;
     }
 
     if (!mounted) {
       return;
     }
-
-    setState(() {
-      _authorized = authenticated;
-    });
+    if(mounted) {
+      setState(() {
+        _authorized = authenticated;
+      });
+    }
   }
 
   void _onMapCreated(GoogleMapController controller) {
@@ -287,7 +304,9 @@ class AttendanceScreenState extends State<AttendanceScreen> {
     _store.locationService.onLocationChanged.listen((LocationData locationData) {
       if(_currentPosition != locationData){
         _currentPosition = locationData;
+        if(mounted){
         setState(() {});
+        }
       }
     });
 

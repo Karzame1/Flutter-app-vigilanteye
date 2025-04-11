@@ -23,6 +23,7 @@ class User {
     required this.email,
     required this.designation,
     required this.coy,
+    required this.shift,
     required this.phoneNumber,
     required this.emailVerifiedAt,
     required this.type,
@@ -110,6 +111,7 @@ class User {
   final DateTime? updatedAt;
   final List<Role> roles;
   final Coy? team;
+  final Shift? shift;
 
   factory User.fromJson(Map<String, dynamic> json){
     return User(
@@ -120,6 +122,7 @@ class User {
       email: json["email"],
       designation: json["designation"],
       coy: json["coy"] == null ? null : Coy.fromJson(json["coy"]),
+      shift: json["shift"] == null? null : Shift.fromJson(json["shift"]),
       phoneNumber: json["phone_number"],
       emailVerifiedAt: json["email_verified_at"],
       type: json["type"],
@@ -260,6 +263,67 @@ class Coy {
 
 }
 
+class Shift {
+  Shift({
+      required this.id,
+      required this.title,
+      required this.description,
+      required this.startTime,
+      required this.endTime,
+      required this.status,
+      required this.sunday,
+      required this.monday,
+      required this.tuesday,
+      required this.wednesday,
+      required this.thursday,
+      required this.friday,
+      required this.saturday,
+      required this.createdById,
+      required this.updatedById,
+      required this.createdAt,
+      required this.updatedAt,
+  });
+
+    final int? id;
+    final String? title;
+    final String? description;
+    final String? startTime;
+    final String? endTime;
+    final String? status;
+    final int? sunday;
+    final int? monday;
+    final int? tuesday;
+    final int? wednesday;
+    final int? thursday;
+    final int? friday;
+    final int? saturday;
+    final dynamic createdById;
+    final dynamic updatedById;
+    final DateTime? createdAt;
+    final DateTime? updatedAt;
+
+    factory Shift.fromJson(Map<String, dynamic> json){
+      return Shift(
+        id: json["id"],
+        title: json["title"],
+        description: json["description"],
+        startTime: json["start_time"],
+        endTime: json["end_time"],
+        status: json["status"],
+        sunday: json["sunday"],
+        monday: json["monday"],
+        tuesday: json["tuesday"],
+        wednesday: json["wednesday"],
+        thursday: json["thursday"],
+        friday: json["friday"],
+        saturday: json["saturday"],
+        createdById: json["created_by_id"],
+        updatedById: json["updated_by_id"],
+        createdAt: DateTime.tryParse(json["created_at"] ?? ""),
+        updatedAt: DateTime.tryParse(json["updated_at"] ?? ""),
+      );
+    }
+}
 class Team {
   Team({
     required this.id,

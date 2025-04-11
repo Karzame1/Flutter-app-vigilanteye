@@ -4,10 +4,31 @@ import 'package:nb_utils/nb_utils.dart';
 
 import '../../Utils/app_widgets.dart';
 import '../../main.dart';
+import '../../models/user_profile_model.dart';
 
-class AttendanceStatusComponent extends StatelessWidget {
-  const AttendanceStatusComponent({super.key});
+class AttendanceStatusComponent extends StatefulWidget{
+  static String tag = '/AttendanceScreen';
+  const AttendanceStatusComponent({Key? key}) : super(key: key);
 
+  @override
+  State<AttendanceStatusComponent> createState() => _AttendanceStatusState();
+}
+
+class _AttendanceStatusState extends State<AttendanceStatusComponent> {
+  User? _userProfileModel;
+  void getUserProfile() async {
+    debugPrint("like Bhai===>${sharedHelper.getUserId()}");
+    // var result = await apiRepo.getUserProfile(getStringAsync(userIdPref));
+    var result = await apiRepo.getUserProfile(sharedHelper.getUserId());
+    debugPrint("data in attendance --> ${result!.shift?.title}");
+    _userProfileModel = result ;
+    setState(() {});
+  }
+  @override
+  void initState() {
+    super.initState();
+    getUserProfile();
+  }
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -34,7 +55,7 @@ class AttendanceStatusComponent extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            language!.lblAttendanceStatus,
+                           /* language!.lblAboutUs*/_userProfileModel?.shift?.title ?? 'Loading Shift...',
                             style: primaryTextStyle(color: white),
                           ),
                         ],

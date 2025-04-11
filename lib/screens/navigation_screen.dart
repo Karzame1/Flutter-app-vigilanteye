@@ -95,19 +95,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
     super.dispose();
   }
 
-  /*{
-    "Date": "May 13, 2024 at 6:13:24 PM",
-    "alert_type": "Emergency",
-    "alert_message": "A user needs emergency service",
-    "Latitude": "31.5545131",
-    "Longitude": "74.3635971",
-    "city": "Lahore",
-    "isRead": true,
-    "state": "Punjab",
-    "user_Img": "https://firebasestorage.googleapis.com/v0/b/karzame-f00a9.appspot.com/o/UserPics%2Ffile%3A%2Fstorage%2Femulated%2F0%2FAndroid%2Fdata%2Fcom.karzamesos.app%2Ffiles%2FPictures%2Fe5856340-9b10-4b76-9d76-37c41dcea4aa_1714495511843.jpg?alt=media&token=cda67c9d-0d85-4046-862a-f315ad812c69",
-    "user_Name": "M.Hamza",
-    "user_Phone": "+923164558585"
-}*/
+
 
   void setupFirebase() {
     FirebaseMessaging.onMessage.listen((RemoteMessage event) {
@@ -156,47 +144,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
                       }
                   },
                 ),
-              )
-              /*Dialog(
-              backgroundColor: black,
-              child: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(20),
-                      child: Image.network
-                        (
-                        "https://img.freepik.com/free-photo/young-bearded-man-with-striped-shirt_273609-5677.jpg?t=st=1721395266~exp=1721398866~hmac=3a2cd39e4b565f4f755d0b8e5b31e2799cb133daec956289e175088f86860340&w=1380",
-                        width: 300,
-                        height: 160,
-                        fit: BoxFit.fill,
-                        errorBuilder: (_,loading, loadingPercentage){
-                          return CupertinoActivityIndicator(color: white,);
-                        },
-                      ),
-                    ),
-                    10.height,
-                    Center(child: Text("Kidnapping Alert", style: TextStyle(color: purple,fontSize: 18),)),
-                    10.height,
-                    Center(
-                        child: Flexible(
-                            child: Text("Kidnapping Alertjd dfdfh dskjgbdjkgds hdsjhgskjd ghgh fhhjhd hffh fdjf bdjfb dfbhj gndj ", style: TextStyle(color: white,fontSize: 18),textAlign: TextAlign.center,))),
-                    10.height,
-                    ElevatedButton(
-                        onPressed: (){},
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: greenColor,
-                          foregroundColor: white
-                        ),
-                        child: Text("Locate Victim"),
-                    )
-
-                  ],
-                ),
-              ),
-            )*/;
+              );
           });
     });
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage event) {
@@ -208,7 +156,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
               Dialog(
                 backgroundColor: appStore.isDarkModeOn?black:white,
                 child: SosAlertDialog(sosAlertModel: SosAlertModel(
-                    id : event.data["id"],
+                    id : event.data["alert_id"],
                     userName: event.data["user_Name"],
                     userPhone: event.data["user_Phone"],
                     message: event.data["alert_message"],
@@ -253,7 +201,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
                 Dialog(
                   backgroundColor: appStore.isDarkModeOn ? black : white,
                   child: SosAlertDialog(sosAlertModel: SosAlertModel(
-                      id: event.data["id"],
+                      id: event.data["alert_id"],
                       userName: event.data["user_Name"],
                       userPhone: event.data["user_Phone"],
                       message: event.data["alert_message"],
@@ -297,7 +245,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
     debugPrint("like Bhai===>${sharedHelper.getUserId()}");
     // var result = await apiRepo.getUserProfile(getStringAsync(userIdPref));
     var result = await apiRepo.getUserProfile(sharedHelper.getUserId());
-    debugPrint("data ayya h --> ${result!.coy!.id}");
+    debugPrint("data ayya h --> ${result!.shift?.title}");
     _userProfileModel = result ;
     setState(() {});
   }
@@ -313,6 +261,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
     timer = Timer.periodic(const Duration(seconds: 4), (timer) async {
       if (getBoolAsync(isLoggedInPref)) {
         var result = await apiRepo.checkAttendanceStatus();
+        log("attendance status-->$result");
         if (result != null) {
           if (result.userStatus == 'inactive') {
             timer.cancel();

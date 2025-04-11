@@ -13,6 +13,9 @@ class SharedHelper {
   String getUserId() {
     return getStringAsync(userIdPref);
   }
+  String getAlertId(){
+    return getStringAsync(alertIdPref);
+  }
   void logout() async {
     clearSharedPref();
     toast(language!.lblLoggedOutSuccessfully);
@@ -59,7 +62,7 @@ class SharedHelper {
     log('Location update interval value is $interval');
 
     var type = getStringAsync(locationUpdateIntervalTypePref);
-
+    log('type update is $type');
     if (type == '') {
       return Duration(seconds: interval);
     } else {

@@ -3,14 +3,18 @@ import 'dart:io';
 import 'package:fieldmanager_hrms_flutter/Widgets/button_widget.dart';
 import 'package:fieldmanager_hrms_flutter/screens/Visits/visit_store.dart';
 import 'package:fieldmanager_hrms_flutter/utils/app_colors.dart';
+import 'package:fieldmanager_hrms_flutter/utils/app_constants.dart';
 import 'package:fieldmanager_hrms_flutter/utils/app_widgets.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:nb_utils/nb_utils.dart';
 
+import '../../dialog/sos_alert_dialog.dart';
 import '../../main.dart';
 import '../../models/Client/client_model.dart';
+import '../../models/sos_model.dart';
 import '../Client/add_client_screen.dart';
 
 class VisitScreen extends StatefulWidget {
@@ -220,18 +224,25 @@ class _VisitScreenState extends State<VisitScreen> {
                             ),
                             10.height,
                             button(language!.lblSubmit, onTap: () async {
+                              log("Submit button clicked ---> $filePath");
+                              log("Shared Alert id is ---> ${sharedHelper.getAlertId()}");
                               if (filePath.isEmptyOrNull) {
                                 toast(language!.lblImageIsRequired);
                                 return;
                               }
+                              if(sharedHelper.getAlertId().isEmptyOrNull){
+                                toast("You don't get any alert");
+                                return;
+                              }
                               if (_formKey.currentState!.validate()) {
-                                var result = await _store.submit(
-                                    filePath, _remarksCont.text, '0');
+                                var result = await _store.submit_new(
+                                    filePath, _remarksCont.text);
                                 if (result) {
                                   toast(language!.lblSubmittedSuccessfully);
                                   if (!mounted) return;
                                   finish(context);
                                 }
+                                await setValue(alertIdPref, "");
                               }
                             }),
                           ],
