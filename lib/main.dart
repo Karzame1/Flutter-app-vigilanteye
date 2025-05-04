@@ -470,8 +470,10 @@ void _onActivityReceive(Activity activity) {
   var longitude = getDoubleAsync(longitudePref);
   var count = getIntAsync(activityCountPref);
   var isTracking = getBoolAsync(isTrackingOnPref);
+  debugPrint("Tracking status-->$isTracking");
   setValue(activityCountPref, count + 1);
   if (isTracking) {
+    debugPrint("tracking attendance status");
     trackingService.updateAttendanceStatus(activity, latitude, longitude);
   }
   _activityStreamController.sink.add(activity);

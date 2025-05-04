@@ -80,7 +80,7 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
-
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_REMOTE_MESSAGING" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="com.google.android.gms.permission.ACTIVITY_RECOGNITION" />
     <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
@@ -136,9 +136,9 @@
             </intent-filter>
         </activity>
         <service
-            android:name="id.flutter.flutter_background_service.BackgroundService"
-            android:foregroundServiceType="remoteMessaging"
-            />
+           android:name="id.flutter.flutter_background_service.BackgroundService"
+           android:foregroundServiceType="remoteMessaging"
+           />
 
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
@@ -146,7 +146,7 @@
             android:name="flutterEmbedding"
             android:value="2" />
         <meta-data android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyB8FqsngMx4_4R7X9uUjECoTKuUXIARiE8"/>
+            android:value="AIzaSyDQbd1IyMfornnHz7rGdOROFHBaZI4CtkY"/>
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"
             android:value="high_importance_channel" />

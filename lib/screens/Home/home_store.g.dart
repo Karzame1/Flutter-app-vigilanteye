@@ -28,7 +28,7 @@ mixin _$HomeStore on HomeStoreBase, Store {
   @override
   String toString() {
     return '''
-    isLoading: ${isLoading}
+isLoading: ${isLoading}
     ''';
   }
 }

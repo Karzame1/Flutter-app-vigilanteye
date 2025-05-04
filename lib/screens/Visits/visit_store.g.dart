@@ -73,14 +73,14 @@ mixin _$VisitStore on VisitStoreBase, Store {
     });
   }
 
-  late final _$submitAsyncAction =
-      AsyncAction('VisitStoreBase.submit', context: context);
+  late final _$submit_newAsyncAction =
+      AsyncAction('VisitStoreBase.submit_new', context: context);
 
-  /*@override
-  Future<bool> submit(String filePath, String comments, String clientId) {
-    return _$submitAsyncAction
-        .run(() => super.submit(filePath, comments, clientId));
-  }*/
+  @override
+  Future<bool> submit_new(String filePath, String comments) {
+    return _$submit_newAsyncAction
+        .run(() => super.submit_new(filePath, comments));
+  }
 
   @override
   String toString() {

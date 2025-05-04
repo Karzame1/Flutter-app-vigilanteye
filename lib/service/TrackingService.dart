@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_activity_recognition/flutter_activity_recognition.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:location/location.dart';
+import 'package:location/location.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 import '../main.dart';
@@ -14,8 +16,9 @@ import '../utils/app_constants.dart';
 class TrackingService {
   Battery battery = Battery();
   int count = 0;
-
+  final Location locationService = Location();
   updateDeviceStatus(double latitude, double longitude) async {
+    debugPrint("tracking service call hua h-->updateDevice");
     debugPrint("updated $latitude $longitude");
     // Instantiate it
     var battery = Battery();
@@ -34,6 +37,7 @@ class TrackingService {
 
   Future updateAttendanceStatus(
       Activity activity, double latitude, double longitude) async {
+    debugPrint("tracking service call hua h-->updateAttendance");
     count++;
     if (appStore.getCurrentStatus != null &&
         appStore.getCurrentStatus!.status == 'checkedin') {}
@@ -70,6 +74,30 @@ class TrackingService {
     };
     log(req);
     await apiRepo.updateAttendanceStatus(req);
+  }
+
+  Future checkInStatus(String status,String move,String feedback) async {
+    var location = await locationService.getLocation();
+    var battery = Battery();
+
+    Map req = {
+      "user": {
+        "user_id": getStringAsync(userIdPref),
+        "username": getStringAsync(firstNamePref),
+        "battery_level": await battery.batteryLevel,
+        "duty_status": status,
+        "movement_status": move,
+        "feedback": feedback,
+        "latitude": location.latitude ?? 0.0,
+        "longitude": location.longitude ?? 0.0,
+      }
+    };
+    var result = await apiRepo.checkStatus(req);
+    print("klmn--->${result.message}");
+    if(!result.isSuccess){
+      // toast(result.message);
+      return false;
+    }
   }
 
   Future startTrackingService() async {

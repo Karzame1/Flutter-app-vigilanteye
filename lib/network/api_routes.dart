@@ -93,4 +93,9 @@ class APIRoutes {
 
   //SignBoard
   static const addSignBoardRequest = '${baseURL}signBoard/createRequest';
+
+  //Bank
+  static const createBank = '${baseURL}bank';
+  static const verifyBank = '${baseURL}bank/verify';
+  static const bankList = '${baseURL}bank/paystack';
 }

@@ -327,6 +327,8 @@ abstract class BaseLanguage {
 
   String get lblAboutUsDescription;
 
+  String get lblWallet;
+
   String get lblHome;
 
   String get lblAttendanceStatus;

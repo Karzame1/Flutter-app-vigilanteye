@@ -10,6 +10,7 @@ import 'package:fieldmanager_hrms_flutter/screens/Chat/ChattingScreen.dart';
 import 'package:fieldmanager_hrms_flutter/screens/Client/client_screen.dart';
 import 'package:fieldmanager_hrms_flutter/screens/Expense/ExpenseScreen.dart';
 import 'package:fieldmanager_hrms_flutter/screens/Leave/LeaveScreen.dart';
+import 'package:fieldmanager_hrms_flutter/screens/Wallet/wallet_screen.dart';
 import 'package:fieldmanager_hrms_flutter/utils/app_colors.dart';
 import 'package:fieldmanager_hrms_flutter/utils/app_widgets.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -54,7 +55,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
   }
 
   StreamSubscription? _sub;
-  (double, double) _latlong = (0,0);
+  (double, double) _latlong = (0, 0);
   Future<void> initUniLinks() async {
     // // ... check initialLink
     // try {
@@ -69,12 +70,12 @@ class _NavigationScreenState extends State<NavigationScreen> {
     // Attach a listener to the stream
     _sub = linkStream.listen((String? link) async {
       debugPrint("link $link");
-      if(link != null){
+      if (link != null) {
         Uri uri = Uri.parse(link);
         debugPrint("query parameters -> ${uri.queryParameters}");
-        if(uri.queryParameters["msg"] != null){
+        if (uri.queryParameters["msg"] != null) {
           debugPrint("query parameters -> ${uri.queryParameters}");
-          Future.delayed(Duration.zero,(){
+          Future.delayed(Duration.zero, () {
             ChattingScreen(
               alertMsg: uri.queryParameters["msg"],
             ).launch(context, isNewTask: true);
@@ -95,8 +96,6 @@ class _NavigationScreenState extends State<NavigationScreen> {
     super.dispose();
   }
 
-
-
   void setupFirebase() {
     FirebaseMessaging.onMessage.listen((RemoteMessage event) {
       log("message received fdgfggf${event.data}");
@@ -105,58 +104,11 @@ class _NavigationScreenState extends State<NavigationScreen> {
       showDialog(
           context: context,
           builder: (BuildContext context) {
-            return
-              Dialog(
-                backgroundColor: appStore.isDarkModeOn?black:white,
-                child: SosAlertDialog(
-                    sosAlertModel: SosAlertModel(
-                      id: event.data["alert_id"],
-                  userName: event.data["user_Name"],
-                  userPhone: event.data["user_Phone"],
-                  message: event.data["alert_message"],
-                  // message: event.notification!.body,
-                  userImage: event.data["user_Img"],
-                  type: event.data["alert_type"],
-                  latitude: event.data["Latitude"],
-                  longitude: event.data["Longitude"]
-                ),
-                  onLocateVictim: (lat,long) async{
-                      try {
-                        debugPrint("kite-->${event.data}");
-                        /*final updated = await apiRepo.updateAlertStatus(event.data["id"]??'');
-
-                        if(!updated){
-                          toast("Not updated!, please try again!,");
-                          return;
-                        }*/
-                        setState(() {
-                          if (lat != null && long != null) {
-                            _latlong = (lat, long);
-                            _currentIndex = 0;
-                            attendanceScreenKey.currentState?.reinitialize();
-                          }else{
-                            _latlong = (0,0);
-                          }
-                        });
-                      } on Exception catch (e) {
-                        debugPrint("error $e");
-                        toast(e.toString());
-                      }
-                  },
-                ),
-              );
-          });
-    });
-    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage event) {
-      debugPrint("notification data aaya  --> ${event.data}");
-      showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return
-              Dialog(
-                backgroundColor: appStore.isDarkModeOn?black:white,
-                child: SosAlertDialog(sosAlertModel: SosAlertModel(
-                    id : event.data["alert_id"],
+            return Dialog(
+              backgroundColor: appStore.isDarkModeOn ? black : white,
+              child: SosAlertDialog(
+                sosAlertModel: SosAlertModel(
+                    id: event.data["alert_id"],
                     userName: event.data["user_Name"],
                     userPhone: event.data["user_Phone"],
                     message: event.data["alert_message"],
@@ -164,22 +116,111 @@ class _NavigationScreenState extends State<NavigationScreen> {
                     userImage: event.data["user_Img"],
                     type: event.data["alert_type"],
                     latitude: event.data["Latitude"],
-                    longitude: event.data["Longitude"]
-                ),
-                  onLocateVictim: (lat,long) async{
-                    try {
-                      /*final updated = await apiRepo.updateAlertStatus(event.data["id"]??'');
+                    longitude: event.data["Longitude"]),
+                onLocateVictim: (lat, long) async {
+                  try {
+                    debugPrint("kite-->${event.data}");
+                    /*final updated = await apiRepo.updateAlertStatus(event.data["id"]??'');
+
+                        if(!updated){
+                          toast("Not updated!, please try again!,");
+                          return;
+                        }*/
+                    setState(() {
+                      if (lat != null && long != null) {
+                        _latlong = (lat, long);
+                        _currentIndex = 0;
+                        attendanceScreenKey.currentState?.reinitialize();
+                      } else {
+                        _latlong = (0, 0);
+                      }
+                    });
+                  } on Exception catch (e) {
+                    debugPrint("error $e");
+                    toast(e.toString());
+                  }
+                },
+              ),
+            );
+          });
+    });
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage event) {
+      debugPrint("notification data aaya  --> ${event.data}");
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return Dialog(
+              backgroundColor: appStore.isDarkModeOn ? black : white,
+              child: SosAlertDialog(
+                sosAlertModel: SosAlertModel(
+                    id: event.data["alert_id"],
+                    userName: event.data["user_Name"],
+                    userPhone: event.data["user_Phone"],
+                    message: event.data["alert_message"],
+                    // message: event.notification!.body,
+                    userImage: event.data["user_Img"],
+                    type: event.data["alert_type"],
+                    latitude: event.data["Latitude"],
+                    longitude: event.data["Longitude"]),
+                onLocateVictim: (lat, long) async {
+                  try {
+                    /*final updated = await apiRepo.updateAlertStatus(event.data["id"]??'');
                       if(!updated){
                         toast("Not updated!, please try again!,");
                         return;
                       }*/
+                    setState(() {
+                      if (lat != null && long != null) {
+                        _latlong = (lat, long);
+                        _currentIndex = 0;
+                        attendanceScreenKey.currentState?.reinitialize();
+                      } else {
+                        _latlong = (0, 0);
+                      }
+                    });
+                  } on Exception catch (e) {
+                    debugPrint("error $e");
+                    toast(e.toString());
+                  }
+                },
+              ),
+            );
+          });
+    });
+    FirebaseMessaging.instance.getInitialMessage().then((event) {
+      if (event != null) {
+        debugPrint("notification from background  --> ${event.data}");
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return Dialog(
+                backgroundColor: appStore.isDarkModeOn ? black : white,
+                child: SosAlertDialog(
+                  sosAlertModel: SosAlertModel(
+                      id: event.data["alert_id"],
+                      userName: event.data["user_Name"],
+                      userPhone: event.data["user_Phone"],
+                      message: event.data["alert_message"],
+                      // message: event.notification!.body,
+                      userImage: event.data["user_Img"],
+                      type: event.data["alert_type"],
+                      latitude: event.data["Latitude"],
+                      longitude: event.data["Longitude"]),
+                  onLocateVictim: (lat, long) async {
+                    try {
+                      /*final updated = await apiRepo.updateAlertStatus(
+                            event.data["id"] ?? '');
+                        if (!updated) {
+                          toast("Not updated!, please try again!,");
+                          return;
+                        }*/
                       setState(() {
                         if (lat != null && long != null) {
                           _latlong = (lat, long);
                           _currentIndex = 0;
                           attendanceScreenKey.currentState?.reinitialize();
-                        }else{
-                          _latlong = (0,0);
+                        } else {
+                          _latlong = (0, 0);
                         }
                       });
                     } on Exception catch (e) {
@@ -189,52 +230,6 @@ class _NavigationScreenState extends State<NavigationScreen> {
                   },
                 ),
               );
-          });
-    });
-    FirebaseMessaging.instance.getInitialMessage().then((event){
-      if(event!=null) {
-        debugPrint("notification from background  --> ${event.data}");
-        showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return
-                Dialog(
-                  backgroundColor: appStore.isDarkModeOn ? black : white,
-                  child: SosAlertDialog(sosAlertModel: SosAlertModel(
-                      id: event.data["alert_id"],
-                      userName: event.data["user_Name"],
-                      userPhone: event.data["user_Phone"],
-                      message: event.data["alert_message"],
-                      // message: event.notification!.body,
-                      userImage: event.data["user_Img"],
-                      type: event.data["alert_type"],
-                      latitude: event.data["Latitude"],
-                      longitude: event.data["Longitude"]
-                  ),
-                    onLocateVictim: (lat, long) async {
-                      try {
-                        /*final updated = await apiRepo.updateAlertStatus(
-                            event.data["id"] ?? '');
-                        if (!updated) {
-                          toast("Not updated!, please try again!,");
-                          return;
-                        }*/
-                        setState(() {
-                          if (lat != null && long != null) {
-                            _latlong = (lat, long);
-                            _currentIndex = 0;
-                            attendanceScreenKey.currentState?.reinitialize();
-                          } else {
-                            _latlong = (0, 0);
-                          }
-                        });
-                      } on Exception catch (e) {
-                        debugPrint("error $e");
-                        toast(e.toString());
-                      }
-                    },
-                  ),
-                );
             });
       }
     });
@@ -246,10 +241,10 @@ class _NavigationScreenState extends State<NavigationScreen> {
     // var result = await apiRepo.getUserProfile(getStringAsync(userIdPref));
     var result = await apiRepo.getUserProfile(sharedHelper.getUserId());
     debugPrint("data ayya h --> ${result!.shift?.title}");
-    _userProfileModel = result ;
+    _userProfileModel = result;
     setState(() {});
   }
-  
+
   void init() async {
     getUserProfile();
     if (isIOS) {
@@ -258,7 +253,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
       disableBatteryOptimization();
     }
     initUniLinks();
-    timer = Timer.periodic(const Duration(seconds: 4), (timer) async {
+    timer = Timer.periodic(const Duration(minutes: 10), (timer) async {
       if (getBoolAsync(isLoggedInPref)) {
         var result = await apiRepo.checkAttendanceStatus();
         log("attendance status-->$result");
@@ -270,17 +265,19 @@ class _NavigationScreenState extends State<NavigationScreen> {
             const BannedScreen().launch(context, isNewTask: true);
           }
           appStore.setCurrentStatus(result);
+          debugPrint("fine value-->${result.status}");
           if (result.status == "checkedin" && await hasPermission()) {
             trackingService.startTrackingService();
+            trackingService.checkInStatus('On Duty','Moving','Accepted');
           } else {
             trackingService.stopTrackingService();
+            trackingService.checkInStatus('Off Duty','Stationary','Declined');
           }
         } else {
           trackingService.stopTrackingService();
         }
       }
     });
-
   }
 
   Future<void> disableBatteryOptimization() async {
@@ -360,7 +357,8 @@ To conduct well-being check requests*/
     return true;
   }
 
-  final GlobalKey<AttendanceScreenState> attendanceScreenKey = GlobalKey<AttendanceScreenState>();
+  final GlobalKey<AttendanceScreenState> attendanceScreenKey =
+      GlobalKey<AttendanceScreenState>();
 
   @override
   Widget build(BuildContext context) {
@@ -496,52 +494,55 @@ To conduct well-being check requests*/
         ),
       ),
       // body: tab[_currentIndex],
-      body:  IndexedStack(
-      index: _currentIndex,
-      children: [
-        Navigator(
-          onGenerateRoute: (settings) {
-            return MaterialPageRoute(
-              builder: (context) =>  AttendanceScreen(latLong: _latlong,key: attendanceScreenKey,),
-              // settings: RouteSettings(
-              //   arguments: {
-              //     "lat" : _latlong.$1,
-              //     "long": _latlong.$2,
-              //   }
-              // )
-            );
-          },
-        ),
-        Navigator(
-          onGenerateRoute: (settings) {
-            return MaterialPageRoute(
-              builder: (context) => const ExpenseScreen(),
-            );
-          },
-        ),
-        Navigator(
-          onGenerateRoute: (settings) {
-            return MaterialPageRoute(
-              builder: (context) => const DashboardScreen(),
-            );
-          },
-        ),
-        Navigator(
-          onGenerateRoute: (settings) {
-            return MaterialPageRoute(
-              builder: (context) => const LeaveScreen(),
-            );
-          },
-        ),
-        Navigator(
-          onGenerateRoute: (settings) {
-            return MaterialPageRoute(
-              builder: (context) => const TeamScreen(),
-            );
-          },
-        ),
-      ],
-    ),
+      body: IndexedStack(
+        index: _currentIndex,
+        children: [
+          Navigator(
+            onGenerateRoute: (settings) {
+              return MaterialPageRoute(
+                builder: (context) => AttendanceScreen(
+                  latLong: _latlong,
+                  key: attendanceScreenKey,
+                ),
+                // settings: RouteSettings(
+                //   arguments: {
+                //     "lat" : _latlong.$1,
+                //     "long": _latlong.$2,
+                //   }
+                // )
+              );
+            },
+          ),
+          Navigator(
+            onGenerateRoute: (settings) {
+              return MaterialPageRoute(
+                builder: (context) => const ExpenseScreen(),
+              );
+            },
+          ),
+          Navigator(
+            onGenerateRoute: (settings) {
+              return MaterialPageRoute(
+                builder: (context) => const DashboardScreen(),
+              );
+            },
+          ),
+          Navigator(
+            onGenerateRoute: (settings) {
+              return MaterialPageRoute(
+                builder: (context) => const LeaveScreen(),
+              );
+            },
+          ),
+          Navigator(
+            onGenerateRoute: (settings) {
+              return MaterialPageRoute(
+                builder: (context) => const TeamScreen(),
+              );
+            },
+          ),
+        ],
+      ),
       drawer: Drawer(
         /*Asset inspection
 Response Alert
@@ -622,80 +623,103 @@ Disable settings*/
                     ),
                   ),*/
 
-          DrawerHeader(
-          decoration: const BoxDecoration(color: opPrimaryColor),
-          child: Row(
-            children: [
-              const SizedBox(
-                width: 8,
-              ),
-              SizedBox(
-                width: 260,
-
-                child: _userProfileModel == null
-                    ? const Center(
-                  child: Text(
-                    "Loading Details...",
-                    style: TextStyle(color: Colors.white, fontSize: 16),
+                  DrawerHeader(
+                    decoration: const BoxDecoration(color: opPrimaryColor),
+                    child: Row(
+                      children: [
+                        const SizedBox(
+                          width: 8,
+                        ),
+                        SizedBox(
+                          width: 260,
+                          child: _userProfileModel == null
+                              ? const Center(
+                                  child: Text(
+                                    "Loading Details...",
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 16),
+                                  ),
+                                )
+                              : Padding(
+                                  padding: const EdgeInsets.only(
+                                      bottom:
+                                          8.0), // Added padding at the bottom
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Flexible(
+                                            flex: 4,
+                                            child: Text(
+                                              _userProfileModel?.roleType == 0
+                                                  ? _userProfileModel
+                                                          ?.team?.name ??
+                                                      'Not Found'
+                                                  : _userProfileModel
+                                                          ?.coy?.name ??
+                                                      'Not Found',
+                                              maxLines: 2,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: primaryTextStyle(
+                                                  color: white, size: 18),
+                                            ),
+                                          ),
+                                          if (_userProfileModel
+                                                      ?.coy?.imageUrl !=
+                                                  null ||
+                                              _userProfileModel
+                                                      ?.team?.imageUrl !=
+                                                  null)
+                                            Flexible(
+                                              flex: 1,
+                                              child: Image.network(
+                                                _userProfileModel?.roleType == 0
+                                                    ? _userProfileModel
+                                                            ?.team?.imageUrl ??
+                                                        ''
+                                                    : _userProfileModel
+                                                            ?.coy?.imageUrl ??
+                                                        '',
+                                              ),
+                                            )
+                                        ],
+                                      ),
+                                      Text(
+                                        'Division: ${_userProfileModel?.division ?? 'Not Found'}',
+                                        maxLines: 1,
+                                        style: primaryTextStyle(
+                                            color: white, size: 18),
+                                      ),
+                                      Text(
+                                        sharedHelper
+                                            .getFullName()
+                                            .toUpperCase(),
+                                        maxLines: 1,
+                                        style: primaryTextStyle(
+                                            color: white, size: 16),
+                                      ),
+                                      Text(
+                                        'LGA: ${_userProfileModel?.lga ?? 'Not Found'}',
+                                        maxLines: 1,
+                                        style: primaryTextStyle(
+                                            color: white, size: 15),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                        ),
+                      ],
+                    ),
                   ),
-                )
-                    : Padding(
-                  padding: const EdgeInsets.only(bottom: 8.0), // Added padding at the bottom
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Flexible(
-                            flex: 4,
-                            child: Text(
-                              _userProfileModel?.roleType == 0
-                                  ? _userProfileModel?.team?.name ?? 'Not Found'
-                                  : _userProfileModel?.coy?.name ?? 'Not Found',
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                              style: primaryTextStyle(color: white, size: 18),
-                            ),
-                          ),
-                          if (_userProfileModel?.coy?.imageUrl != null ||
-                              _userProfileModel?.team?.imageUrl != null)
-                            Flexible(
-                              flex: 1,
-                              child: Image.network(
-                                _userProfileModel?.roleType == 0
-                                    ? _userProfileModel?.team?.imageUrl ?? ''
-                                    : _userProfileModel?.coy?.imageUrl ?? '',
-                              ),
-                            )
-                        ],
-                      ),
-                      Text(
-                        'Division: ${_userProfileModel?.division ?? 'Not Found'}',
-                        maxLines: 1,
-                        style: primaryTextStyle(color: white, size: 18),
-                      ),
-                      Text(
-                        sharedHelper.getFullName().toUpperCase(),
-                        maxLines: 1,
-                        style: primaryTextStyle(color: white, size: 16),
-                      ),
-                      Text(
-                        'LGA: ${_userProfileModel?.lga ?? 'Not Found'}',
-                        maxLines: 1,
-                        style: primaryTextStyle(color: white, size: 15),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
 
-        // UserAccountsDrawerHeader(
+                  // UserAccountsDrawerHeader(
                   //   decoration: const BoxDecoration(color: opPrimaryColor),
                   //   accountName: Text(
                   //     // '${getStringAsync(appCountryPhoneCodePref)} ${getStringAsync(phoneNumberPref)}',
@@ -715,35 +739,47 @@ Disable settings*/
                   //   ),
                   // ),
                   SettingItemWidget(
-                    title: language!.lblShareApp,
-                    leading: const Icon(Iconsax.share),
-                    onTap: () async {
-
+                    title: language!.lblWallet,
+                    leading: const Icon(Iconsax.wallet),
+                    onTap: () {
+                      _currentIndex = 0;
+                      setState(() {});
+                      scaffoldKey.currentState!.closeDrawer();
+                      const WalletScreen().launch(context);
                     },
                   ),
+                  // SettingItemWidget(
+                  //   title: language!.lblShareApp,
+                  //   leading: const Icon(Iconsax.share),
+                  //   onTap: () async {},
+                  // ),
                   SettingItemWidget(
-                    // padding: const EdgeInsets.only(left: 16, right: 16),
-                    title: language!.lblNotification,
-                    leading: const Icon(Iconsax.notification),
-                    trailing: const Text("0",style: TextStyle(color: colorPrimaryBlack,fontSize: 16),)
-                    
-                    // Switch(
-                    //   value: isNotificationEnabled,
-                    //   onChanged: (value) async {
-                    //     var instance = FirebaseMessaging.instance;
-                    //     if (value) {
-                    //       instance.subscribeToTopic('announcement');
-                    //     } else {
-                    //       instance.unsubscribeFromTopic('announcement');
-                    //     }
-                    //     setState(() {
-                    //       isNotificationEnabled = value;
-                    //     });
-                    //   },
-                    //   activeTrackColor: opPrimaryColor,
-                    //   activeColor: white,
-                    // ),
-                  ),
+                      // padding: const EdgeInsets.only(left: 16, right: 16),
+                      title: language!.lblNotification,
+                      leading: const Icon(Iconsax.notification),
+                      trailing: const Text(
+                        "0",
+                        style:
+                            TextStyle(color: colorPrimaryBlack, fontSize: 16),
+                      )
+
+                      // Switch(
+                      //   value: isNotificationEnabled,
+                      //   onChanged: (value) async {
+                      //     var instance = FirebaseMessaging.instance;
+                      //     if (value) {
+                      //       instance.subscribeToTopic('announcement');
+                      //     } else {
+                      //       instance.unsubscribeFromTopic('announcement');
+                      //     }
+                      //     setState(() {
+                      //       isNotificationEnabled = value;
+                      //     });
+                      //   },
+                      //   activeTrackColor: opPrimaryColor,
+                      //   activeColor: white,
+                      // ),
+                      ),
 
                   SettingItemWidget(
                     padding: const EdgeInsets.only(left: 16, right: 16),
@@ -870,5 +906,3 @@ Disable settings*/
     );
   }
 }
-
-

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:fieldmanager_hrms_flutter/Utils/app_constants.dart';
 import 'package:fieldmanager_hrms_flutter/models/Client/client_model.dart';
 import 'package:fieldmanager_hrms_flutter/models/Client/client_model_skip_take.dart';
@@ -5,6 +7,7 @@ import 'package:fieldmanager_hrms_flutter/models/Expense/expense_request_model.d
 import 'package:fieldmanager_hrms_flutter/models/Expense/expense_type_model.dart';
 import 'package:fieldmanager_hrms_flutter/models/Settings/app_settings_model.dart';
 import 'package:fieldmanager_hrms_flutter/models/chat_response.dart';
+import 'package:fieldmanager_hrms_flutter/models/create_bank_response_model.dart';
 import 'package:fieldmanager_hrms_flutter/models/dashboard_model.dart';
 import 'package:fieldmanager_hrms_flutter/models/status/status_response.dart';
 import 'package:fieldmanager_hrms_flutter/models/user_profile_model.dart';
@@ -14,6 +17,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 import '../models/api_response_model.dart';
+import '../models/bank_list_model.dart';
 import '../models/leave_request_model.dart';
 import '../models/leave_type_model.dart';
 import '../models/schedule_model.dart';
@@ -29,15 +33,17 @@ class ApiService {
         await postRequest(APIRoutes.setAlertRead, {"alertId": id}));
     return checkSuccessCase(response);
   }
+
   //update alert status
-  Future updateAlertStatus(String id,String status) async {
-    debugPrint("h aaaya h--->$id ----------------- ${sharedHelper.getUserId()}");
-    var response = await handleResponse(
-        await postRequest(APIRoutes.updateAlertStatus,
-            {
-              'alert_id': id,
-              'status' : status,
-              'user_id': sharedHelper.getUserId()}));
+  Future updateAlertStatus(String id, String status) async {
+    debugPrint(
+        "h aaaya h--->$id ----------------- ${sharedHelper.getUserId()}");
+    var response = await handleResponse(await postRequest(
+        APIRoutes.updateAlertStatus, {
+      'alert_id': id,
+      'status': status,
+      'user_id': sharedHelper.getUserId()
+    }));
     debugPrint("response aaya-->$response");
     return checkSuccessCase(response);
   }
@@ -90,10 +96,10 @@ class ApiService {
 
   //get user profile model
   Future<User?> getUserProfile(String id) async {
-    var response = await handleResponse(await postRequest(APIRoutes.profileURL,
-        {'id' : id}));
+    var response = await handleResponse(
+        await postRequest(APIRoutes.profileURL, {'id': id}));
     debugPrint("users data --> ${response?.data}");
-    if(!checkSuccessCase(response)) return null;
+    if (!checkSuccessCase(response)) return null;
     var user = User.fromJson(response?.data['user']);
     return user;
   }
@@ -156,20 +162,22 @@ class ApiService {
     res.isSuccess = true;
     return res;
   }
+
   //Live-Location
   Future<Result> checkStatus(Map req) async {
     Result res = Result();
-    var result =
-      await handleResponse(await postRequest(APIRoutes.updateUserStatus, req));
-      res.message = result!.message;
-      return res;
+    var result = await handleResponse(
+        await postRequest(APIRoutes.updateUserStatus, req));
+    res.message = result!.message;
+    return res;
   }
+
   //Expense
   Future<List<ExpenseTypeModel>> getExpenseTypes() async {
     var response =
         await handleResponse(await getRequest(APIRoutes.getExpenseTypes));
     if (!checkSuccessCase(response)) return [];
-
+    log("expenses type are-->${response?.data.toString()}");
     Iterable list = response?.data;
     return list.map((m) => ExpenseTypeModel.fromJson(m)).toList();
   }
@@ -280,7 +288,7 @@ class ApiService {
     if (!checkSuccessCase(response)) return null;
 
     var status = StatusResponse.fromJson(response?.data);
-    log("response Status--->$status");
+    log("response Status--->${response?.data}");
     return status;
   }
 
@@ -307,7 +315,8 @@ class ApiService {
     var param = Uri(queryParameters: query).query;
 
     try {
-      var result = await handleResponse(await getRequestWithQuery(APIRoutes.checkDevice, param));
+      var result = await handleResponse(
+          await getRequestWithQuery(APIRoutes.checkDevice, param));
       debugPrint("device_status..response$result");
       if (result == null) {
         return null;
@@ -341,8 +350,8 @@ class ApiService {
   }
 
   Future<bool> checkValidEmployeeId(String employeeId) async {
-    var response = await handleResponse(
-        await postRequest(APIRoutes.userNameCheckURL, {'user_name':employeeId}));
+    var response = await handleResponse(await postRequest(
+        APIRoutes.userNameCheckURL, {'user_name': employeeId}));
 
     return checkSuccessCase(response);
   }
@@ -376,6 +385,32 @@ class ApiService {
     }
   }
 
+
+  Future<BankResponse?> getBanks() async {
+    var response = await handleResponse(await getRequest(APIRoutes.bankList));
+
+    if (!checkSuccessCase(response)) {
+      return null;
+    }
+
+    var bankResponse = BankResponse.fromJson(response?.data);
+    return bankResponse;
+  }
+Future<CreateBankModel?> createBank(Map req) async {
+    //var response = await handleResponse(await postRequest(APIRoutes.createBank, req));
+    var response = await postRequest(APIRoutes.createBank, req);
+    //if (!checkSuccessCase(response)) return null;
+
+    return CreateBankModel.fromJson(json.decode(response.body));
+  }
+
+Future<void> verifyBank(Map req) async {
+    //var response = await handleResponse(await postRequest(APIRoutes.createBank, req));
+    var response = await handleResponse(await postRequest(APIRoutes.verifyBank, req));
+    log(response!.message!);
+    toast(response.message);
+  }
+
   bool checkSuccessCase(ApiResponseModel? response, {bool showError = false}) {
     if (!showError) {
       return response != null &&
@@ -392,4 +427,5 @@ class ApiService {
       }
     }
   }
+
 }

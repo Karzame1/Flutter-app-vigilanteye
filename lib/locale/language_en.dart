@@ -173,6 +173,9 @@ class LanguageEn extends BaseLanguage {
   String get lblHalfDay => 'Half Day';
 
   @override
+  String get lblWallet => 'Wallet';
+
+  @override
   String get lblHome => 'Home';
 
   @override
