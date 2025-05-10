@@ -10,7 +10,13 @@ class Bankstore = BankStoreBase with _$Bankstore;
 
 abstract class BankStoreBase with Store {
   @observable
-  bool isLoading = false;
+  bool isVerifyBankLoading = false;
+
+  @observable
+  bool isCreateBankLoading = false;
+
+  @observable
+  bool isFetchBankLoading = false;
 
   @observable
   String bankId = '';
@@ -22,26 +28,25 @@ abstract class BankStoreBase with Store {
   ObservableList<Bank> banks = ObservableList<Bank>();
 
   Future<void> fetchBanks() async {
-    isLoading = true;
+    isFetchBankLoading = true;
     try {
-      final response = await apiRepo.getBanks();
-      log("bank list found is :${response?.data}");
-      if (response != null && response.status) {
-        final data = response.data as List;
-        runInAction(() {
-          banks.clear();
-          banks.addAll(data.map((item) => Bank.fromJson(item)));
-        });
-      }
+      banks.addAll(await apiRepo.getBanks()??[]);
+      log("bank list found is :$banks");
+      log("Bank length is ${banks.length}");
+      // if (response != null && response.status) {
+      //   final data = response.data as List;
+      //   banks.clear();
+      //   banks.addAll(data.map((e) => Bank.fromJson(e)).toList());
+      // }
     } catch (e) {
       log('Error fetching banks: $e');
       toast('Failed to load banks');
     } finally {
-      isLoading = false;
+      isFetchBankLoading = false;
     }
   }
   Future<void> createBank(String bankCode, String accountNumber) async {
-    isLoading = true;
+    isCreateBankLoading = true;
     Map req = {"bank_code": bankCode, "account_number": accountNumber};
     var result = await apiRepo.createBank(req);
     log(result.toString());
@@ -59,12 +64,13 @@ abstract class BankStoreBase with Store {
     // } else {
     //   toast('Unable to create bank');
     // }
-    isLoading = false;
+    isCreateBankLoading = false;
   }
 
   Future<void> verifyBank() async {
-    isLoading = true;
+    isVerifyBankLoading = true;
     Map req = {"bank_id": bankId, "amount_received": amountSent};    
     await apiRepo.verifyBank(req);
+    isVerifyBankLoading = false;
   }
 }

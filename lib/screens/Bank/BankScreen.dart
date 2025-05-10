@@ -4,6 +4,7 @@ import 'package:fieldmanager_hrms_flutter/screens/Bank/BankStore.dart';
 import 'package:fieldmanager_hrms_flutter/utils/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:nb_utils/nb_utils.dart';
 
 import '../../models/bank_list_model.dart';
 
@@ -17,13 +18,13 @@ class BankScreen extends StatefulWidget {
 class _BankScreenState extends State<BankScreen> {
   final _store = Bankstore();
 
-  final _bankCodeCont = TextEditingController();
   final _accountNumberCont = TextEditingController();
 
   final _bankIdCont = TextEditingController();
   final _amountSentCont = TextEditingController();
   String? _selectedBankCode;
   Bank? _selectedBank;
+  String? _bankCode;
 
   @override
   void initState() {
@@ -60,7 +61,6 @@ class _BankScreenState extends State<BankScreen> {
 
   Form getCreateBankColumn() {
     final formKey = GlobalKey<FormState>();
-
     return Form(
       key: formKey,
       child: Column(
@@ -72,73 +72,48 @@ class _BankScreenState extends State<BankScreen> {
               Text('Bank Name'),
             ],
           ),
-          /*DropdownButtonFormField(
-              value: null,
-              hint: const Text('Select Bank'),
+          Observer(builder: (_) {
+            log(_store.banks.length.toString());
+            if (_store.isFetchBankLoading) {
+              return const CircularProgressIndicator();
+            }
+            if (_store.banks.isEmpty) {
+              return const Text('No banks available');
+            }
+            return DropdownButtonFormField<Bank>(
+              value: _selectedBank,
+              //isDense: true, // Reduces overall size
+              //iconSize: 20, // Smaller dropdown icon
+              style: const TextStyle(fontSize: 14), // Smaller text
+              menuMaxHeight: 200, // Prevent upward expansion
+              hint: const Text(
+                'Select Bank',
+                style: TextStyle(fontSize: 14), // Smaller hint text
+              ),
               decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5))),
-              items: const [
-                DropdownMenuItem(
-                    value: 'Access Bank', child: Text('Access Bank')),
-                DropdownMenuItem(
-                    value: 'United Africa Bank',
-                    child: Text('United Africa Bank')),
-                DropdownMenuItem(value: 'GTB', child: Text('GTB')),
-                DropdownMenuItem(value: 'Opay', child: Text('Opay')),
-                DropdownMenuItem(value: 'Zenith', child: Text('Zenith')),
-                DropdownMenuItem(value: 'First Bank', child: Text('First Bank'))
-              ],
-              onChanged: (value) {}),*/
-          Observer(
-            builder: (_) {
-              if (_store.isLoading) {
-                return const CircularProgressIndicator();
-              }
-              if (_store.banks.isEmpty) {
-                return const Text('No banks available');
-              }
-              return DropdownButtonFormField<Bank>(
-                value: _selectedBank,
-                hint: const Text('Select Bank'),
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(5)),
-                ),
-                items: _store.banks.map((Bank bank) {
-                  return DropdownMenuItem<Bank>(
-                    value: bank,
-                    child: Text(bank.name),
-                  );
-                }).toList(),
-                onChanged: (Bank? newValue) {
-                  setState(() {
-                    _selectedBank = newValue;
-                    _selectedBankCode = newValue?.code;
-                  });
-                },
-                validator: (value) => value == null ? 'Please select a bank' : null,
-              );
-            },
-          ),
-          const SizedBox(
-            height: 20,
-          ),
-          const Row(
-            children: [
-              Text('Bank code'),
-            ],
-          ),
-          TextFormField(
-            controller: _bankCodeCont,
-            decoration: getInputDecoration(),
-            validator: (value) {
-              log("check validation 1 $value");
-              return value == null || value.isEmpty
-                  ? 'Bank code is required'
-                  : null;
-            },
-          ),
-
+                // contentPadding:
+                //     const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                border: getInputDecoration().border,
+                //isDense: true, // Compact form field
+              ),
+              items: _store.banks.map((Bank bank) {
+                return DropdownMenuItem<Bank>(
+                  value: bank,
+                  child: Text(
+                    bank.name,
+                    style: const TextStyle(color: black),
+                    //style: TextStyle(fontSize: 14), // Consistent item text size
+                  ),
+                );
+              }).toList(),
+              onChanged: (Bank? value) {
+                setState(() {
+                  _bankCode = value!.code;
+                  _selectedBank = value;
+                });
+              },
+            );
+          }),
           const SizedBox(height: 8), // Add spacing between fields
           const Row(
             children: [
@@ -160,7 +135,7 @@ class _BankScreenState extends State<BankScreen> {
             backgroundColor: opPrimaryColor,
             onPressed: () {
               if (formKey.currentState!.validate()) {
-                _store.createBank(_bankCodeCont.text, _accountNumberCont.text);
+                _store.createBank(_bankCode ?? '', _accountNumberCont.text);
               }
             },
             label: const Text('Create Bank'),
@@ -177,59 +152,65 @@ class _BankScreenState extends State<BankScreen> {
         _bankIdCont.text = _store.bankId;
         _amountSentCont.text = _store.amountSent;
         return Visibility(
-          visible: _store.bankId.isNotEmpty && _store.amountSent.isNotEmpty,
-          child: Form(
-            key: formKey,
-            child: Column(
-              children: [
-                const Text('Verify Bank'),
-                const Row(
-                  children: [
-                    Text('Bank ID'),
-                  ],
-                ),
-                TextFormField(
-                  controller: _bankIdCont,
-                  decoration: getInputDecoration(),
-                  validator: (value) {
-                    log("check validation 1 $value");
-                    return value == null || value.isEmpty
-                        ? 'Bank id is required'
-                        : null;
-                  },
-                ),
-
-                const SizedBox(height: 8), // Add spacing between fields
-                const Row(
-                  children: [
-                    Text('Amount Sent'),
-                  ],
-                ),
-                TextFormField(
-                  controller: _amountSentCont,
-                  decoration: getInputDecoration(),
-                  validator: (value) {
-                    log("check validation 2 $value");
-                    return value == null || value.isEmpty
-                        ? 'Account Number is required'
-                        : null;
-                  },
-                ),
-
-                const SizedBox(
-                    height: 16), // Add spacing between fields and button
-                FloatingActionButton.extended(
-                  backgroundColor: opPrimaryColor,
-                  onPressed: () {
-                    if (formKey.currentState!.validate()) {
-                      _store.verifyBank();
-                    }
-                  },
-                  label: const Text('Verify Bank'),
+          visible: _store.isCreateBankLoading ||
+              (_store.bankId.isNotEmpty && _store.amountSent.isNotEmpty),
+          // ignore: prefer_const_constructors
+          child: _store.isCreateBankLoading
+              ? const CircularProgressIndicator(
+                  color: opPrimaryColor,
                 )
-              ],
-            ),
-          ),
+              : Form(
+                  key: formKey,
+                  child: Column(
+                    children: [
+                      const Text('Verify Bank'),
+                      const Row(
+                        children: [
+                          Text('Bank ID'),
+                        ],
+                      ),
+                      TextFormField(
+                        controller: _bankIdCont,
+                        decoration: getInputDecoration(),
+                        validator: (value) {
+                          log("check validation 1 $value");
+                          return value == null || value.isEmpty
+                              ? 'Bank id is required'
+                              : null;
+                        },
+                      ),
+
+                      const SizedBox(height: 8), // Add spacing between fields
+                      const Row(
+                        children: [
+                          Text('Amount Sent'),
+                        ],
+                      ),
+                      TextFormField(
+                        controller: _amountSentCont,
+                        decoration: getInputDecoration(),
+                        validator: (value) {
+                          log("check validation 2 $value");
+                          return value == null || value.isEmpty
+                              ? 'Account Number is required'
+                              : null;
+                        },
+                      ),
+
+                      const SizedBox(
+                          height: 16), // Add spacing between fields and button
+                      FloatingActionButton.extended(
+                        backgroundColor: opPrimaryColor,
+                        onPressed: () {
+                          if (formKey.currentState!.validate()) {
+                            _store.verifyBank();
+                          }
+                        },
+                        label: const Text('Verify Bank'),
+                      )
+                    ],
+                  ),
+                ),
         );
       },
     );

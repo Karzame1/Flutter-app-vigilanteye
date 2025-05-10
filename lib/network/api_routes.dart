@@ -98,4 +98,10 @@ class APIRoutes {
   static const createBank = '${baseURL}bank';
   static const verifyBank = '${baseURL}bank/verify';
   static const bankList = '${baseURL}bank/paystack';
+
+  //Visits/Wallet
+  static const getVisitsURL = '${baseURL}visit';
+
+  //Wallet
+  static const getWalletBalance = '${baseURL}wallet';
 }

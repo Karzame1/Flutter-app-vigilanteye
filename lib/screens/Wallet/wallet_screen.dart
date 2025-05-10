@@ -2,6 +2,7 @@ import 'package:fieldmanager_hrms_flutter/screens/Wallet/wallet_approved.dart';
 import 'package:fieldmanager_hrms_flutter/screens/Wallet/wallet_cashout.dart';
 import 'package:fieldmanager_hrms_flutter/screens/Wallet/wallet_decline.dart';
 import 'package:fieldmanager_hrms_flutter/screens/Wallet/wallet_pending.dart';
+import 'package:fieldmanager_hrms_flutter/screens/Wallet/wallet_store.dart';
 import 'package:fieldmanager_hrms_flutter/screens/Wallet/wallet_wallet.dart';
 import 'package:fieldmanager_hrms_flutter/utils/app_colors.dart';
 import 'package:flutter/material.dart';
@@ -16,6 +17,7 @@ class WalletScreen extends StatefulWidget {
 class _WalletScreenState extends State<WalletScreen> with SingleTickerProviderStateMixin {
 
   late TabController _tabController;
+  final _store = WalletStore();
 
   @override
   void initState() {
@@ -104,12 +106,12 @@ class _WalletScreenState extends State<WalletScreen> with SingleTickerProviderSt
                   padding: const EdgeInsets.only(top: 20),
                   child: TabBarView(
                     controller: _tabController,
-                    children: const [
-                      WalletWallet(),
-                      WalletCashout(),
-                      WalletApproved(),
-                      WalletPending(),
-                      WalletDecline(),
+                    children: [
+                      WalletWallet(_store),
+                      const WalletCashout(),
+                      WalletApproved(_store),
+                      WalletPending(_store),
+                      WalletDecline(_store),
                     ],
                   ),
                 ),
