@@ -87,8 +87,8 @@ Future<void> setupFlutterNotifications() async {
     showDialog(
       context: navigatorKey.currentContext!, // Make sure to use a valid context
       builder: (context) => AlertDialog(
-        title: Text('Notification Clicked'),
-        content: Text(
+        title: const Text('Notification Clicked'),
+        content: const Text(
             'This is an example dialog that shows up after clicking the notification.'),
         actions: [
           TextButton(
@@ -96,7 +96,7 @@ Future<void> setupFlutterNotifications() async {
               Navigator.of(context)
                   .pop();
             },
-            child: Text('OK'),
+            child: const Text('OK'),
           ),
         ],
       ),

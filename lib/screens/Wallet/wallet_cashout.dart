@@ -1,6 +1,7 @@
 import 'package:fieldmanager_hrms_flutter/Utils/app_colors.dart';
 import 'package:fieldmanager_hrms_flutter/main.dart';
 import 'package:fieldmanager_hrms_flutter/screens/Bank/BankScreen.dart';
+import 'package:fieldmanager_hrms_flutter/screens/Bank/BankStore.dart';
 import 'package:fieldmanager_hrms_flutter/screens/Wallet/submit_request_dialogue.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -32,7 +33,8 @@ class _WalletCashoutState extends State<WalletCashout> {
         FloatingActionButton.extended(
           backgroundColor: opPrimaryColor,
           label: const Text("Manage Bank"),
-          onPressed: () {
+          onPressed: () async {
+            //await Bankstore().fetchBanks();
             const BankScreen().launch(context);
           },
         ),
@@ -73,9 +75,9 @@ class _WalletCashoutState extends State<WalletCashout> {
                 backgroundColor: opPrimaryColor,
                 label: const Text("Submit Request"),
                 onPressed: () {
-                  showDialog(
-                      context: context,
-                      builder: (context) => const SubmitRequestDialogue());
+                  // showDialog(
+                  //     context: context,
+                  //     builder: (context) => const SubmitRequestDialogue());
                 },
               ),
             ),

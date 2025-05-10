@@ -11,6 +11,7 @@ import 'package:fieldmanager_hrms_flutter/models/create_bank_response_model.dart
 import 'package:fieldmanager_hrms_flutter/models/dashboard_model.dart';
 import 'package:fieldmanager_hrms_flutter/models/status/status_response.dart';
 import 'package:fieldmanager_hrms_flutter/models/user_profile_model.dart';
+import 'package:fieldmanager_hrms_flutter/models/visits_model.dart';
 import 'package:fieldmanager_hrms_flutter/network/result.dart';
 import 'package:fieldmanager_hrms_flutter/service/SharedHelper.dart';
 import 'package:flutter/cupertino.dart';
@@ -385,18 +386,64 @@ class ApiService {
     }
   }
 
+  Future<List<Bank>?> getBanks() async {
+    log("Getting called here");
 
-  Future<BankResponse?> getBanks() async {
     var response = await handleResponse(await getRequest(APIRoutes.bankList));
+    log("API response handler ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ${response.toString()}");
+    if (!checkSuccessCase(response)) {
+      return null;
+    }
+    log("------------------true------------------");
 
+    List<Bank> banks = [];
+
+    response!.data.forEach((element) {
+      log("decoding=====================================");
+      //log(json.decode(element));
+      Bank b = Bank.fromJson(element);
+      // log("code is ${b.code}");
+      banks.add(b);
+    });
+
+    return banks;
+  }
+
+  Future<List<VisitsModel>?> getVisits(String status) async {
+    var response = await handleResponse(
+        await getRequest('${APIRoutes.getVisitsURL}?status=$status'));
     if (!checkSuccessCase(response)) {
       return null;
     }
 
-    var bankResponse = BankResponse.fromJson(response?.data);
-    return bankResponse;
+    List<VisitsModel> visits = [];
+
+    response!.data.forEach((element) {
+      VisitsModel v = VisitsModel.fromJson(element);
+      visits.add(v);
+    });
+
+    return visits;
   }
-Future<CreateBankModel?> createBank(Map req) async {
+
+  Future<String?> getWalletBalance() async {
+    // var response = await handleResponse(await getRequest(APIRoutes.getWalletBalance));
+    // if (!checkSuccessCase(response)) return null;
+    // return response?.data.toString();
+
+    var response = await getRequest(APIRoutes.getWalletBalance);
+    if (response.statusCode == 200) {
+      log("response body ${response.body}");
+      log("response status code ${response.statusCode}");
+
+      var data = json.decode(response.body);
+      return data['balance'].toString();
+    } else {
+      return null;
+    }
+  }
+
+  Future<CreateBankModel?> createBank(Map req) async {
     //var response = await handleResponse(await postRequest(APIRoutes.createBank, req));
     var response = await postRequest(APIRoutes.createBank, req);
     //if (!checkSuccessCase(response)) return null;
@@ -404,9 +451,10 @@ Future<CreateBankModel?> createBank(Map req) async {
     return CreateBankModel.fromJson(json.decode(response.body));
   }
 
-Future<void> verifyBank(Map req) async {
+  Future<void> verifyBank(Map req) async {
     //var response = await handleResponse(await postRequest(APIRoutes.createBank, req));
-    var response = await handleResponse(await postRequest(APIRoutes.verifyBank, req));
+    var response =
+        await handleResponse(await postRequest(APIRoutes.verifyBank, req));
     log(response!.message!);
     toast(response.message);
   }
@@ -427,5 +475,4 @@ Future<void> verifyBank(Map req) async {
       }
     }
   }
-
 }
